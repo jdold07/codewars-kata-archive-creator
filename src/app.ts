@@ -29,14 +29,13 @@ async function processCompletedKata() {
       const fullPath: string = join(rootFolder, rankFolder, kataSnakeCase)
       createFolders(response.data, fullPath, kataSnakeCase, kataCamelCase)
       try {
-        fs.writeFileSync(join(fullPath, `${kataSnakeCase}.md`), createMarkdown(response.data), { mode: 644 })
+        fs.writeFileSync(join(fullPath, `${kataSnakeCase}.md`), createMarkdown(response.data, kata), { mode: 644 })
       } catch (err) {
-        console.log(`Something went wrong while writing MD file\nError: ${err}`)
-        throw Error(`Something went wrong while writing MD file\nError: ${err}`)
+        console.log(`Possible issue while writing MD file\n${err}`)
       }
     } catch (err: any) {
-      console.log(`Something has gone wrong in main flow\nError: ${err}`)
-      throw Error(`Something has gone wrong in main flow\nError: ${err}`)
+      console.log(`Something has stopped the main app flow\n${err}`)
+      throw Error(`Something has stopped the main app flow\n${err}`)
     }
   }
   console.log("Success!  It looks like everything has completed as expected.")
@@ -47,8 +46,7 @@ function createFolders(kata: any, fullPath: string, kataSnakeCase: string, kataC
   try {
     fs.mkdirSync(fullPath, { recursive: true, mode: 755 })
   } catch (err) {
-    console.log(`Something went wrong while creating Kata directory\nError: ${err}`)
-    throw Error(`Something went wrong while creating Kata directory\nError: ${err}`)
+    console.log(`Possible issue while creating Kata directory\nError: ${err}`)
   }
   Array.from(myLanguages.keys())
     .filter((v) => kata.languages.includes(v))
@@ -60,15 +58,13 @@ function createFolders(kata: any, fullPath: string, kataSnakeCase: string, kataC
       try {
         fs.mkdirSync(pathLang, { recursive: true, mode: 755 })
       } catch (err) {
-        console.log(`Something went wrong while creating the ${v} directory\nError: ${err}`)
-        throw Error(`Something went wrong while creating the ${v} directory\nError: ${err}`)
+        console.log(`Possible issue while creating the ${v} directory\n${err}`)
       }
       const kataFilename = v === "python" ? kataSnakeCase : kataCamelCase
       try {
         fs.writeFileSync(join(pathLang, `${kataFilename}.${extLang}`), "", { flag: "wx", mode: 646 })
       } catch (err) {
-        console.log(`Something went wrong while writing ${extLang} code file\nError: ${err}`)
-        throw Error(`Something went wrong while writing ${extLang} code file\nError: ${err}`)
+        console.warn(`Possible issue while writing ${extLang} code file\n${err}`)
       }
       try {
         fs.writeFileSync(
@@ -77,54 +73,49 @@ function createFolders(kata: any, fullPath: string, kataSnakeCase: string, kataC
           { flag: "wx", mode: 644 }
         )
       } catch (err) {
-        console.log(`Something went wrong while writing ${extLang} test file\nError: ${err}`)
-        throw Error(`Something went wrong while writing ${extLang} test file\nError: ${err}`)
+        console.log(`Possible issue while writing ${extLang} test file\n${err}`)
       }
     })
 }
 
 // json2md mapping / layout to generate markdown file content
-function createMarkdown(kata: any) {
+function createMarkdown(kata: any, completed: any): string {
   try {
     return json2md([
-      { h1: `<div style:"color:${kata.rank.color}">${kata.rank.name} - ${kata.name}<div />` },
+      { h1: `${kata.rank.name} - ${kata.name}` },
       {
         h5: `**ID**: [${kata.id}](${kata.url}) | **Slug**: [${kata.slug}](${
           kata.url
-        }) | **Category**: \`${kata.category.toUpperCase()}\` | **Rank**: <div style:"color:${kata.rank.color}">${
+        }) | **Category**: \`${kata.category.toUpperCase()}\` | **Rank**: <span style="color:${kata.rank.color}">${
           kata.rank.name
-        }<div />`
+        }</span>`
       },
       {
-        h5: `**First Published**: ${kata.publishedAt.split("T")[0]} **by** [${kata.createdBy.username}](${
+        h5: `**First Published**: ${kata.publishedAt.split("T")[0]} ***by*** [${kata.createdBy.username}](${
           kata.createdBy.url
-        }) | **Approved**: ${kata.approvedAt.split("T")[0]} **by** [${kata.approvedBy.username}](${kata.approvedBy.url})`
+        }) | **Approved**: ${kata.approvedAt.split("T")[0]} ***by*** [${kata.approvedBy.username}](${kata.approvedBy.url})`
       },
-      { h5: `**Languages**: ${kata.languages.join(", ")}` },
+      { h5: `**Languages Available**: ${kata.languages.join(", ")}` },
+      {
+        h5: `**My Completed Languages**: ${completed.completedLanguages.join(", ")} ***as at*** ${
+          new Date().toISOString().split("T")[0]
+        } | **Originally completed**: ${completed.completedAt.split("T")[0]}`
+      },
       { hr: "" },
       { h2: "Kata Description" },
       { p: kata.description },
       { hr: "" },
-      {
-        p: `🏷 \`${kata.tags.join(" | ").toUpperCase()}\`<div style="text-align:right">[View this Kata on Codewars.com](${
-          kata.url
-        })<div />`
-      },
-      {
-        img: {
-          title: "JDOld07 Codewars Badge",
-          source: "https://www.codewars.com/users/jdold07/badges/large",
-          alt: "JDOld07 Codewars Badge"
-        }
-      },
+      { p: `🏷 \`${kata.tags.join(" | ").toUpperCase()}\`` },
+      { p: `[View this Kata on Codewars.com](${kata.url})` },
+      { img: { title: "JDOld07 Codewars Bad", source: "https://www.codewars.com/users/jdold07/badges/large" } },
       { hr: "" },
       {
         h6: "*This Kata description was compiled by [**JDOld07**](https://tpstech.dev) with data provided by the [Codewars.com](https://www.codewars.com) API.  The solutions in this repo associated with this kata are my solutions unless otherwise noted in the code file.  Test cases are generally those as provided in the Kata, but may include additional test cases I created while coding my solution.  My solutions are not always commented as the solutions are rarely submitted with comments.*"
       }
     ])
   } catch (err) {
-    console.log(`Something has gone wrong executing json2md\nError: ${err}`)
-    throw Error(`Something has gone wrong executing json2md\nError: ${err}`)
+    console.log(`Possible issue while executing json2md\n${err}`)
+    return "# Ooops, something went wrong!\n### An error occurred while generating the Markdown file's content"
   }
 }
 
