@@ -1,4 +1,4 @@
-export const completedKata = {
+export const completedKataTest = {
   totalPages: 4,
   totalItems: 773,
   kata: [

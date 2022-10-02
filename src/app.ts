@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { completedKata } from "./assets/completedKata"
+import { completedKata } from "../private/assets/completedKata"
 import { join } from "node:path"
 import fs from "node:fs"
 import Axios from "axios"
 import json2md from "json2md"
 
 // Variables
-const rootFolder = "/Users/jdold07/Dropbox/Code/cwTest/Codewars_Solutions"
+const rootFolder = "/Users/jdold07/Dropbox/Code/Codewars_Solutions"
 const myLanguages = new Map([
   ["javascript", { name: "JS", extension: "js" }],
   ["typescript", { name: "TS", extension: "ts" }],
