@@ -1,19 +1,19 @@
 {
-  "name": "codewars_kata_md_creator",
-  "version": "1.0.0",
-  "description": "Built to generate Kata markdown description files and place them into an organised file structure for Codewars Kata I've completed with data from Codewars API",
+  "name": "Kata2Markdown",
+  "version": "1.1.0",
+  "description": "App designed to format and generate Codewars Kata description into Markdown files, sorted into an organised file structure for bulk import of completed Codewars Kata's from Codewars API data.",
   "author": "JDOld07",
   "main": "app.js",
+  "license": "MIT",
   "scripts": {
     "test": "jest"
   },
   "keywords": [
     "Codewars",
+    "Kata Solution",
     "Markdown",
-    "JSONtoMD",
-    "Kata"
+    "json2md"
   ],
-  "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
     "json2md": "^2.0.0"
