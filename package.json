@@ -1,7 +1,7 @@
 {
   "name": "Kata2Markdown",
   "version": "1.1.0",
-  "description": "App designed to format and generate Codewars Kata description into Markdown files, sorted into an organised file structure for bulk import of completed Codewars Kata's from Codewars API data.",
+  "description": "An app designed to format and generate Codewars Kata description into Markdown files, sorted into an organised file structure for bulk import of completed Codewars Kata's from Codewars API data.",
   "author": "JDOld07",
   "main": "app.js",
   "license": "MIT",
