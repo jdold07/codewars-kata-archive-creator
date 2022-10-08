@@ -336,6 +336,8 @@ function formatString(KATA: any, lang: string, fileName: string, flag: string): 
         // KATA.tests = KATA?.tests.replace(/\bTest\./g, "")
         // Replace assertions with Chai types
         // KATA.tests = KATA?.tests.replace(/assert.equal/g, "assert.strictEqual")
+        // Remove any existing reference to require/import chai or ./solution
+        KATA.tests = KATA?.tests.replace(/^.*(?:chai).*$/gm, "").replace(/^.*(?:"\.\/).*$/gm)
         // Insert import for Chai & CODE file/module
         KATA.tests = `\nimport { assert } from ("chai")\nimport { ${
           (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
