@@ -1,7 +1,8 @@
 import cheerio from "cheerio"
 import fs from "node:fs"
-import { convert } from "html-to-text"
 import { join } from "node:path"
+import { format } from "prettier"
+// import { convert } from "html-to-text"
 
 export function scrapeHTML() {
   const html = "/Users/jdold07/Dropbox/Code/jdold07/kata2markdown/private/assets/mySolutions.html"
@@ -31,12 +32,14 @@ export function scrapeHTML() {
       const url = "https://www.codewars.com" + $(elLi).find("a").attr("href")
       $("code", elLi).each((_, elCode) => {
         const language = $(elCode).attr("data-language")
+        const parser = language === "javascript" ? "espree" : language === "typescript" ? "typescript" : undefined
+        const code = format($(elCode).text(), { semi: false, printWidth: 125, trailingComma: "none", parser: parser })
         //TODO - Didn't need conversions when scrapping directly on Codewars.com - Test if I can do this with .text() instead of .html() and html-to-text conversion
-        const code = convert($(elCode).html() || "", {
-          preserveNewlines: true,
-          wordwrap: false,
-          whitespaceCharacters: "" // Added to remove default & maintain whitespace in code
-        })
+        // const code = convert($(elCode).html() || "", {  //! Swapping this out for straight text from cheerio with prettier-format
+        //   preserveNewlines: true,
+        //   wordwrap: false,
+        //   whitespaceCharacters: "" // Added to remove default & maintain whitespace in code
+        // })
 
         if (!solutionData.find((v) => v.id === id && v.language === language)) {
           solutionData.push({
