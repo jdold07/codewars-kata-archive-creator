@@ -11,7 +11,6 @@ export function scrapeHTML() {
     url: string | undefined
     language: string | undefined
     code: string | undefined
-    // slug: string | undefined
   }[] = []
 
   function readHTML(): string {
@@ -31,12 +30,12 @@ export function scrapeHTML() {
       const id = $(elLi).find("a").attr("href")?.split("/")[2]
       const url = "https://www.codewars.com" + $(elLi).find("a").attr("href")
       $("code", elLi).each((_, elCode) => {
-        // Removed .find("code") from between el and html() - Assuming don't need to find code, should already be the el
         const language = $(elCode).attr("data-language")
+        //TODO - Didn't need conversions when scrapping directly on Codewars.com - Test if I can do this with .text() instead of .html() and html-to-text conversion
         const code = convert($(elCode).html() || "", {
           preserveNewlines: true,
           wordwrap: false,
-          whitespaceCharacters: "" // Removing original " \t\r\n\f\u200b\u0020\u0009" string to try keep whitespace in code
+          whitespaceCharacters: "" // Added to remove default & maintain whitespace in code
         })
 
         if (!solutionData.find((v) => v.id === id && v.language === language)) {
@@ -45,7 +44,6 @@ export function scrapeHTML() {
             url: url,
             language: language,
             code: code
-            // slug: undefined
           })
         } else {
           console.warn(`Alternate code solution found for ${id} ${language}`)
