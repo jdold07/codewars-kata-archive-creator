@@ -8,6 +8,7 @@ import axiosThrottle from "axios-request-throttle"
 import json2md from "json2md"
 import cheerio from "cheerio"
 import { format } from "prettier"
+import * as config from "../../private/components/config"
 
 axiosThrottle.use(Axios, { requestsPerSecond: 2 })
 
@@ -15,16 +16,9 @@ axiosThrottle.use(Axios, { requestsPerSecond: 2 })
 const date = new Date().toISOString().split("T")[0]
 const html = scrapeHTML()
 const kataTests: { id: string; language: string; code: string } = { id: "", language: "", code: "" }
-const rootFolder = "/Users/jdold07/Dropbox/Code/codewars-solutions"
-const SESSION_ID =
-  "_session_id=f8b560c2297e63decb4c3f73a4ef4b7c; Expires=Sat, 08 Oct 2022 00:52:36 GMT; Path=/; HttpOnly; SameSite=Lax; Domain=www.codewars.com"
-const myLanguages = new Map([
-  ["javascript", { name: "JavaScript", extension: "js" }],
-  ["typescript", { name: "TypeScript", extension: "ts" }],
-  ["coffeescript", { name: "CoffeeScript", extension: "coffee" }],
-  ["python", { name: "Python", extension: "py" }],
-  ["swift", { name: "Swift", extension: "swift" }]
-])
+const rootFolder = config.rootPath
+const SESSION_ID = config.sessionID
+const myLanguages = config.myLanguages
 
 // Fetch completed kata detail from Codewars API & process folders & markdown description file
 async function processKatas() {
@@ -76,11 +70,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
   }
 
   Array.from(myLanguages.keys())
-    .filter(
-      (v) =>
-        kata.languages.includes(v) &&
-        completionDetail[completionDetail.findIndex((x: any) => x.id === kata.id)].completedLanguages.includes(v)
-    )
+    .filter((v) => kata.languages.includes(v) && completionDetail?.completedLanguages.includes(v))
     .forEach(async (v: string) => {
       // Fetch tests from Codewars.com solutions page
       try {
@@ -89,12 +79,14 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
         })
         const $ = cheerio.load(response.data)
         const parser = v === "javascript" ? "espree" : v === "typescript" ? "typescript" : undefined
-        const testsCode = format($("#kata-details-description", response.data).siblings().find("code").text(), {
-          semi: false,
-          printWidth: 125,
-          trailingComma: "none",
-          parser: parser
-        })
+        const testsCode = parser
+          ? format($("#kata-details-description", response.data).siblings().find("code").text(), {
+              semi: false,
+              printWidth: 125,
+              trailingComma: "none",
+              parser: parser
+            })
+          : $("#kata-details-description", response.data).siblings().find("code").text()
 
         Object.assign(kataTests, { id: kata.id, language: v, code: testsCode })
 
@@ -124,7 +116,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
 
         // Generate & write solution code file
         try {
-          fs.writeFileSync(join(langPath, `${kataFilename}.${langExt}`), formatString(KATA, v, "code"), {
+          fs.writeFileSync(join(langPath, `${kataFilename}.${langExt}`), formatString(KATA, v, kataFilename, "code"), {
             flag: "w",
             mode: 644
           })
@@ -137,7 +129,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
         try {
           fs.writeFileSync(
             join(langPath, v === "python" ? `${kataFilename}_test.${langExt}` : `${kataFilename}.Test.${langExt}`),
-            formatString(KATA, v, "test"),
+            formatString(KATA, v, kataFilename, "test"),
             { flag: "w", mode: 644 }
           )
           console.log(`Writing ${kata.id} ${v} TESTS file`)
@@ -211,7 +203,7 @@ function mergeData(kata: any, lang: string) {
 }
 
 // Format string for code file
-function formatString(KATA: any, lang: string, flag: string): string {
+function formatString(KATA: any, lang: string, fileName: string, flag: string): string {
   console.log(`Formatting ${flag === "code" ? "CODE" : "TESTS"} string for ${KATA.slug} in ${lang}`)
 
   // All hash comment languages formatting
@@ -235,7 +227,7 @@ function formatString(KATA: any, lang: string, flag: string): string {
         // Remove any existing import of Codewars framework & import of "solution" module
         KATA.tests = KATA?.tests.replace(/import codewars_test as test/g, "").replace(/from solution import \w+/g, "")
         // Insert import for Codewars python test framework & import CODE module to TEST
-        KATA.tests = `import codewars_test as test\nfrom${KATA?.slug} import ${
+        KATA.tests = `import codewars_test as test\nfrom ${fileName} import ${
           (KATA?.tests?.match(/(?<=equals\()(\w+)(?=\()/) || ["UNKNOWN"])[0]
         }\n\n\n${KATA.tests}`
       }
@@ -246,9 +238,9 @@ function formatString(KATA: any, lang: string, flag: string): string {
       if (flag === "code") {
         // CODE STRING - Reformat export, imports & test config for local use
         // Append export group of top level declarations
-        KATA.code = `${KATA?.code}\n\nmodule.exports = { ${KATA?.code
-          .match(/^(\w+)(?=(?:\s=\s\(\w+).*(?:->|=>))/g)
-          .join(", ")} }`
+        KATA.code = `${KATA?.code}\n\nmodule.exports = { ${
+          KATA?.code?.match(/^(\w+)(?=(?:\s=\s\(\w+).*(?:->|=>))/gm) || ["UNKNOWN"]?.join(", ")
+        } }`
       }
       if (flag === "test") {
         // TEST STRING - Reformat export, imports & test config for local use
@@ -260,17 +252,17 @@ function formatString(KATA: any, lang: string, flag: string): string {
           .replace(/(assertDeepEquals|assertSimilar)/g, "assert.deepEqual")
         // Insert import for Chai & CODE file/module
         KATA.tests = `\n{ assert } = require "chai"\n{ ${
-          (KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)))/) || ["UNKNOWN"])[0]
-        } } = require "./${KATA.slug}"\n\n${KATA?.tests}\n`
+          (KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)|\()))/) || ["UNKNOWN"])[0]
+        } } = require "./${fileName}"\n\n${KATA?.tests}\n`
       }
     }
 
     // Return formatted header & reconfigured CODE || TEST strings for hash comment languages
-    return `# ${KATA?.rank?.name} - ${KATA?.name}  [ ID: ${KATA?.id} ] (${KATA?.slug})\n# URL: ${KATA.url}\n# Category: ${
-      KATA?.category?.toUpperCase() || "NONE"
-    }  |  Tags: ${KATA?.tags?.join(" | ").toUpperCase() || "NONE"}\n\n# ${"=".repeat(118)}\n\n\n${
-      (flag === "code" ? KATA?.code : KATA?.tests) || ""
-    }\n`
+    return `#+ ${"=".repeat(117)}\n#+\n#+ ${KATA?.rank?.name} - ${KATA?.name}  [ ID: ${KATA?.id} ] (${
+      KATA?.slug
+    })\n#+ URL: ${KATA.url}\n#+ Category: ${KATA?.category?.toUpperCase() || "NONE"}  |  Tags: ${
+      KATA?.tags?.join(" | ").toUpperCase() || "NONE"
+    }\n#+\n#+ ${"=".repeat(117)}\n\n${(flag === "code" ? KATA?.code : KATA?.tests) || ""}\n`
   }
 
   // All double forward slash comment languages formatting
@@ -291,9 +283,10 @@ function formatString(KATA: any, lang: string, flag: string): string {
         // Remove existing exports on top level const & functions & any object exports - //! Shouldn't need this for JS
         // KATA.code = KATA?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function))|({.*)?$)/g, "")
         // Append export object that includes all top level const and/or function names
-        KATA.code = `${KATA?.code}\n\nmodule.exports = { ${KATA?.code
-          .match(/(?<=(?:^const|^function)\s)(\w+)(?=(?:\s=\s\(|\s?\())/g)
-          .join(", ")} }`
+        KATA.code = `${KATA?.code}\n\nmodule.exports = { ${
+          KATA?.code?.match(/(?:(?<=(?:^const|^function)\s)(\w+)(?=(?:\s=\s\(|\s?\()))|^\w+(?=\s=[\s\n]+\()/gm) ||
+          ["UNKNOWN"]?.join(", ")
+        } }`
       }
 
       if (flag === "test") {
@@ -317,9 +310,9 @@ function formatString(KATA: any, lang: string, flag: string): string {
         // Insert import for Chai, old Codewars framework utilities & CODE file/module
         KATA.tests = `${
           cwUtilMethods.length ? `\nconst { ${cwUtilMethods.join(", ")} } = require("../../../utils/cwUtils")` : ""
-        }\nconst { assert${/Test.expect/.test(KATA?.tests) ? ", expect" : ""} } = require("chai")\n{ ${
-          (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\)))/) || ["UNKNOWN"])[0]
-        } } = require("./${KATA.slug}")\n\n${KATA?.tests}\n`
+        }\nconst { assert${/Test.expect/.test(KATA?.tests) ? ", expect" : ""} } = require("chai")\nconst { ${
+          (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
+        } } = require("./${fileName}")\n\n${KATA?.tests}\n`
         // Remove any existing reference to Test
         KATA.tests = KATA?.tests.replace(/\bTest\./g, "")
       }
@@ -332,9 +325,9 @@ function formatString(KATA: any, lang: string, flag: string): string {
         // Remove existing exports on top level const & functions & any object exports
         KATA.code = KATA?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function))|({.*)?$)/g, "")
         // Append export object that includes all top level const and/or function names
-        KATA.code = `${KATA?.code}\n\nexport { ${KATA?.code
-          .match(/(?<=(?:^const|^function)\s)(\w+)(?=(?:\s=\s\(|\s?\())/g)
-          .join(", ")} }`
+        KATA.code = `${KATA?.code}\n\nexport { ${
+          KATA?.code?.match(/(?<=(?:^const|^function)\s)(\w+)(?=(?:\s=\s\(|\s?\())/gm) || ["UNKNOWN"]?.join(", ")
+        } }`
       }
 
       if (flag === "test") {
@@ -344,9 +337,9 @@ function formatString(KATA: any, lang: string, flag: string): string {
         // Replace assertions with Chai types
         // KATA.tests = KATA?.tests.replace(/assert.equal/g, "assert.strictEqual")
         // Insert import for Chai & CODE file/module
-        KATA.tests = `\n{ assert } = require("chai")\n{ ${
-          (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\)))/) || ["UNKNOWN"])[0]
-        } } = require("./${KATA.slug}")\n\n${KATA?.tests}\n`
+        KATA.tests = `\nimport { assert } from ("chai")\nimport { ${
+          (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
+        } } from ("./${fileName}")\n\n${KATA?.tests}\n`
       }
     }
 
@@ -361,20 +354,20 @@ function formatString(KATA: any, lang: string, flag: string): string {
     }
 
     // Return formatted header & reconfigured CODE || TEST strings for double forward slash comment languages
-    return `// ${KATA?.rank?.name} - ${KATA?.name}  [ ID: ${KATA?.id} ] (${KATA?.slug})\n// URL: ${
-      KATA.url
-    }\n// Category: ${KATA?.category?.toUpperCase()}  |  Tags: ${
+    return `//+ ${"=".repeat(116)}\n//+\n//+ ${KATA?.rank?.name} - ${KATA?.name}  [ ID: ${KATA?.id} ] (${
+      KATA?.slug
+    })\n//+ URL: ${KATA.url}\n//+ Category: ${KATA?.category?.toUpperCase()}  |  Tags: ${
       KATA?.tags?.join(" | ").toUpperCase() || "NONE"
-    }\n\n// ${"=".repeat(117)}\n\n${(flag === "code" ? KATA?.code : KATA?.tests) || ""}\n`
+    }\n//+\n//+ ${"=".repeat(116)}\n\n${(flag === "code" ? KATA?.code : KATA?.tests) || ""}\n`
   }
 
-  //! CATCHALL / Fall-through formatting - Should not ever hit this!!!
+  //! CATCHALL / Fall-through formatting - Should not ever hit this!  But it provides a default return for TS
   console.error(`REACHED CATCHALL ... Formatting ${flag === "code" ? "CODE" : "TESTS"} string for ${KATA.slug} in ${lang}`)
-  return `// ${KATA?.rank?.name} - ${KATA?.name}  [ ID: ${KATA?.id} ] (${KATA?.slug})\n// URL: ${
-    KATA.url
-  }\n// Category: ${KATA?.category?.toUpperCase()}  |  Tags: ${
+  return `//+ ${"=".repeat(116)}\n//+\n//+ ${KATA?.rank?.name} - ${KATA?.name}  [ ID: ${KATA?.id} ] (${
+    KATA?.slug
+  })\n//+ URL: ${KATA.url}\n//+ Category: ${KATA?.category?.toUpperCase()}  |  Tags: ${
     KATA?.tags?.join(" | ").toUpperCase() || "NONE"
-  }\n\n// ${"=".repeat(117)}\n\n${(flag === "code" ? KATA?.code : KATA?.tests) || ""}\n`
+  }\n//+\n//+ ${"=".repeat(116)}\n\n${(flag === "code" ? KATA?.code : KATA?.tests) || ""}\n`
 }
 
 // Run this bitch!

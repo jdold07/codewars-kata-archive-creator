@@ -33,7 +33,10 @@ export function scrapeHTML() {
       $("code", elLi).each((_, elCode) => {
         const language = $(elCode).attr("data-language")
         const parser = language === "javascript" ? "espree" : language === "typescript" ? "typescript" : undefined
-        const code = format($(elCode).text(), { semi: false, printWidth: 125, trailingComma: "none", parser: parser })
+        const code = parser
+          ? format($(elCode).text(), { semi: false, printWidth: 125, trailingComma: "none", parser: parser })
+          : $(elCode).text()
+
         //TODO - Didn't need conversions when scrapping directly on Codewars.com - Test if I can do this with .text() instead of .html() and html-to-text conversion
         // const code = convert($(elCode).html() || "", {  //! Swapping this out for straight text from cheerio with prettier-format
         //   preserveNewlines: true,
