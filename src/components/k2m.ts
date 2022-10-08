@@ -120,7 +120,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
             flag: "w",
             mode: 644
           })
-          console.log(`Writing ${KATA.slug} ${v} CODE file`)
+          console.log(`Writing ${kataFilename}.${langExt} CODE file`)
         } catch (err) {
           console.warn(`Error writing ${kataFilename}.${langExt} CODE file\n${err}`)
         }
@@ -132,7 +132,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
             formatString(KATA, v, kataFilename, "test"),
             { flag: "w", mode: 644 }
           )
-          console.log(`Writing ${kata.id} ${v} TESTS file`)
+          console.log(`Writing ${kataFilename}.${langExt} TESTS file`)
         } catch (err) {
           console.warn(`Error writing ${kataFilename}.${langExt} TESTS file\n${err}`)
         }
@@ -252,7 +252,7 @@ function formatString(KATA: any, lang: string, fileName: string, flag: string): 
           .replace(/(assertDeepEquals|assertSimilar)/g, "assert.deepEqual")
         // Insert import for Chai & CODE file/module
         KATA.tests = `\n{ assert } = require "chai"\n{ ${
-          (KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)|\()))/) || ["UNKNOWN"])[0]
+          (KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)|\())/) || ["UNKNOWN"])[0]
         } } = require "./${fileName}"\n\n${KATA?.tests}\n`
       }
     }
