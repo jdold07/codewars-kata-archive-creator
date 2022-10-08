@@ -220,9 +220,9 @@ function formatString(KATA: any, lang: string, flag: string): string {
     if (flag === "test") {
       // TEST STRING - Reformat export, imports & test config for local use
       // Remove initial any default comment block
-      KATA.tests = KATA?.tests.replace(/^#(?:.|[\n\r\u2028\u2029#])*?(?=[\w`'"]{2,})(?<=[\n\r\u2028\u2029#])/m, "")
+      KATA.tests = KATA?.tests.replace(/^#(?:.|[\n\r\u2028\u2029#])*?(?=[\w`'"]{2,})(?<=[\n\r\u2028\u2029#])/, "")
       // Remove any trailing default comment block
-      KATA.tests = KATA?.tests.replace(/(?<=.\n|\r|\u2028|\u2029)(?:(#|[`'"]{3}).*|\n|\r|\u2028|\u2029)*(?=$)/m, "")
+      KATA.tests = KATA?.tests.replace(/(?<=.\n|\r|\u2028|\u2029)(?:#.*|\n|\r|\u2028|\u2029)*(?=$)/, "")
     }
 
     //? Python formatting
@@ -236,7 +236,7 @@ function formatString(KATA: any, lang: string, flag: string): string {
         KATA.tests = KATA?.tests.replace(/import codewars_test as test/g, "").replace(/from solution import \w+/g, "")
         // Insert import for Codewars python test framework & import CODE module to TEST
         KATA.tests = `import codewars_test as test\nfrom${KATA?.slug} import ${
-          KATA?.tests?.match(/(?<=equals\()(\w+)(?=\()/)[0]
+          (KATA?.tests?.match(/(?<=equals\()(\w+)(?=\()/) || ["UNKNOWN"])[0]
         }\n\n\n${KATA.tests}`
       }
     }
@@ -253,14 +253,14 @@ function formatString(KATA: any, lang: string, flag: string): string {
       if (flag === "test") {
         // TEST STRING - Reformat export, imports & test config for local use
         // Remove any existing reference to Test
-        KATA.tests = KATA?.tests.replace(/Test\./g, "")
+        KATA.tests = KATA?.tests.replace(/\bTest\./g, "")
         // Replace assertions with Chai types
         KATA.tests = KATA?.tests
           .replace(/assertEquals/g, "assert.strictEqual")
           .replace(/(assertDeepEquals|assertSimilar)/g, "assert.deepEqual")
         // Insert import for Chai & CODE file/module
         KATA.tests = `\n{ assert } = require "chai"\n{ ${
-          KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)))/)[0]
+          (KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)))/) || ["UNKNOWN"])[0]
         } } = require "./${KATA.slug}"\n\n${KATA?.tests}\n`
       }
     }
@@ -279,9 +279,9 @@ function formatString(KATA: any, lang: string, flag: string): string {
     if (flag === "test") {
       // TEST STRING - Reformat export, imports & test config for local use
       // Remove initial any default comment block
-      KATA.tests = KATA?.tests.replace(/^(?:(?:\/\/|\/\*).*|\n|\r|\u2028|\u2029|\*\/)*(?=\w)/m, "")
+      KATA.tests = KATA?.tests.replace(/^(?:(?:\/\/|\/\*).*|\n|\r|\u2028|\u2029|\*\/)*(?=\w)/, "")
       // Remove any trailing default comment block
-      KATA.tests = KATA?.tests.replace(/(?<=.\n|\r|\u2028|\u2029)(?:(?:\/\/|\/\*).*|\n|\r|\u2028|\u2029|\*\/)*(?=$)/m, "")
+      KATA.tests = KATA?.tests.replace(/(?<=.\n|\r|\u2028|\u2029)(?:(?:\/\/|\/\*).*|\n|\r|\u2028|\u2029|\*\/)*(?=$)/, "")
     }
 
     //? JavaScript formatting
@@ -289,7 +289,7 @@ function formatString(KATA: any, lang: string, flag: string): string {
       if (flag === "code") {
         // CODE STRING - Reformat export, imports & test config for local use
         // Remove existing exports on top level const & functions & any object exports - //! Shouldn't need this for JS
-        KATA.code = KATA?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function))|({.*)?$)/g, "")
+        // KATA.code = KATA?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function))|({.*)?$)/g, "")
         // Append export object that includes all top level const and/or function names
         KATA.code = `${KATA?.code}\n\nmodule.exports = { ${KATA?.code
           .match(/(?<=(?:^const|^function)\s)(\w+)(?=(?:\s=\s\(|\s?\())/g)
@@ -298,20 +298,30 @@ function formatString(KATA: any, lang: string, flag: string): string {
 
       if (flag === "test") {
         // TEST STRING - Reformat export, imports & test config for local use
-        // Remove any existing reference to require/import chai, assert or ./solution
-        KATA.tests = KATA?.tests.replace()
-        // Remove any existing reference to Test
-        KATA.tests = KATA?.tests.replace(/Test\./g, "")
+        // Remove any existing reference to require/import chai or ./solution
+        KATA.tests = KATA?.tests.replace(/^.*(?:chai).*$/gm, "").replace(/^.*(?:"\.\/).*$/gm)
         // Replace assertions with Chai types
         KATA.tests = KATA?.tests
+          .replace(/expectError/g, "assert.throws")
+          .replace(/expectNoError/g, "assert.doesNotThrow")
           .replace(/assertEquals/g, "assert.strictEqual")
           .replace(/(assertDeepEquals|assertSimilar)/g, "assert.deepEqual")
+          .replace(/assertNotSimilar/g, "assert.notDeepEqual")
           .replace(/assertNotEquals/g, "assert.notStrictEqual")
-          .replace(/assertFuzzyEquals/g, "assert.approximately")
-        // Insert import for Chai & CODE file/module
-        KATA.tests = `\n{ assert } = require("chai")\n{ ${
-          KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\)))/)[0]
+          .replace(/(assertFuzzyEquals|assertApproxEquals)/g, "assert.approximately")
+          .replace(/\bTest.log\b/g, "console.log")
+        // Check for use of old Codewars JS Framework utility methods to a filtered array of any utilities present
+        const cwUtilMethods = ["randomNumber", "randomToken", "randomize", "sample", "inspect"].filter((util) =>
+          new RegExp(`Test.${util}`).test(KATA?.tests)
+        )
+        // Insert import for Chai, old Codewars framework utilities & CODE file/module
+        KATA.tests = `${
+          cwUtilMethods.length ? `\nconst { ${cwUtilMethods.join(", ")} } = require("../../../utils/cwUtils")` : ""
+        }\nconst { assert${/Test.expect/.test(KATA?.tests) ? ", expect" : ""} } = require("chai")\n{ ${
+          (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\)))/) || ["UNKNOWN"])[0]
         } } = require("./${KATA.slug}")\n\n${KATA?.tests}\n`
+        // Remove any existing reference to Test
+        KATA.tests = KATA?.tests.replace(/\bTest\./g, "")
       }
     }
 
@@ -330,12 +340,12 @@ function formatString(KATA: any, lang: string, flag: string): string {
       if (flag === "test") {
         // TEST STRING - Reformat export, imports & test config for local use
         // Remove any existing reference to Test
-        // KATA.tests = KATA?.tests.replace(/Test\./g, "")
+        // KATA.tests = KATA?.tests.replace(/\bTest\./g, "")
         // Replace assertions with Chai types
         // KATA.tests = KATA?.tests.replace(/assert.equal/g, "assert.strictEqual")
         // Insert import for Chai & CODE file/module
         KATA.tests = `\n{ assert } = require("chai")\n{ ${
-          KATA?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\)))/)[0]
+          (KATA?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\)))/) || ["UNKNOWN"])[0]
         } } = require("./${KATA.slug}")\n\n${KATA?.tests}\n`
       }
     }
