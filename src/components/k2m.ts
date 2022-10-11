@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import completedKata from "../../private/assets/completedKata"
-import scrapeHTML from "./scrapper"
+
+//! A lot of changes and commenting was added to SINGLE kata version...
+//! Probably better to archive this version as a reference for bulk Kata
+//! Single Kata modified version should also work for bulk imports.  So this is probably redundant!
+
+import { completedKata } from "../../private/assets/completedKata"
+import { formatAndMergeSolutionData } from "./getSolutionCode"
 import { join } from "node:path"
 import fs from "node:fs"
 import Axios from "axios"
@@ -14,7 +19,6 @@ axiosThrottle.use(Axios, { requestsPerSecond: 2 })
 
 // Variables
 const date = new Date().toISOString().split("T")[0]
-const html = scrapeHTML()
 const kataTests: { id: string; language: string; code: string } = { id: "", language: "", code: "" }
 const rootFolder = config.rootPath
 const SESSION_ID = config.sessionID
@@ -103,7 +107,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
       // Set filename case type
       const kataFilename = v === "python" ? changeCase(kata.slug, "s") : changeCase(kata.slug, "c")
       // Merge solution code & tests code into Kata details data
-      const KATA = mergeData(kata, v)
+      const KATA = await mergeData(kata, v)
 
       // Create individual Kata language path
       if (KATA.code !== "") {
@@ -192,7 +196,8 @@ function generateMarkdownString(kata: any, completed: any): string {
 
 // Combine completed kata detail with scraped HTML data ready for writing to code files
 //TODO - After running and confirming no error logged from this function, delete the if statement and simplify
-function mergeData(kata: any, lang: string) {
+async function mergeData(kata: any, lang: string) {
+  const html = await formatAndMergeSolutionData()
   const index = html.findIndex((v: any) => v.id === kata.id && v.language === lang)
   if (index !== -1) {
     console.log(`Added solution & tests code data for ${kata.slug} in ${lang}`)
