@@ -1,12 +1,14 @@
 import cheerio from "cheerio"
-import fs from "node:fs"
-import { join } from "node:path"
 import { format } from "prettier"
+import Axios from "axios"
+import * as config from "../../private/components/config"
+// import fs from "node:fs"
+// import { join } from "node:path"
 // import { convert } from "html-to-text"
 
-export function scrapeHTML() {
-  const html = "/Users/jdold07/Dropbox/Code/jdold07/kata2markdown/private/assets/mySolutions.html"
-  const data: string = readHTML()
+export async function scrapeHTML() {
+  // const html = solutionPath
+  const data: string = await getHTML()
   const solutionData: {
     id: string | undefined
     url: string | undefined
@@ -14,13 +16,27 @@ export function scrapeHTML() {
     code: string | undefined
   }[] = []
 
-  function readHTML(): string {
+  // Original setup for reading html from manually downloaded local file copy
+  // function readHTML(): string {
+  //   try {
+  //     const fileData = fs.readFileSync(join(html), "utf8")
+  //     return fileData
+  //   } catch (err) {
+  //     console.error("Error Reading File", err)
+  //     throw new Error("File Reading Failed")
+  //   }
+  // }
+
+  // Same step as for readHTML, but for fetching html content directly from codewars.com
+  async function getHTML() {
     try {
-      const fileData = fs.readFileSync(join(html), "utf8")
-      return fileData
+      const response = await Axios.get(`https://www.codewars.com/users/${config.userID}/completed_solutions`, {
+        headers: { Cookie: config.sessionID }
+      })
+      return response.data
     } catch (err) {
-      console.error("Error Reading File", err)
-      throw new Error("File Reading Failed")
+      console.warn(`Error collecting solutions from codewars.com: ${err}`)
+      throw Error(`Cannot access solutions data: ${err}`)
     }
   }
 
@@ -71,5 +87,3 @@ export function scrapeHTML() {
   console.log("Solutions conversion from html to array of objects completed.")
   return solutionData
 }
-
-export default scrapeHTML
