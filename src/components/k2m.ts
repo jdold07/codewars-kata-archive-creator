@@ -42,7 +42,7 @@ async function getCompletedKatasJSON() {
       } else {
         existingCompleted.kata.unshift(kata)
       }
-      fs.writeFileSync(join("./private/assets/completedKata.ts"), JSON.stringify(existingCompleted), {
+      fs.writeFileSync(join("./private/config/completedKata.ts"), JSON.stringify(existingCompleted), {
         flag: "w",
         encoding: "utf8",
         mode: 644
