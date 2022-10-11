@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { completedKata as existingCompleted } from "../../private/config/completedKata"
+import { existingCompleted } from "../../private/config/existingCompletedKata"
 import { formatAndMergeSolutionData } from "./getSolutionCode"
 import * as config from "../../private/config/config"
 import { format } from "prettier"
@@ -46,7 +46,7 @@ async function getCompletedKatasJSON() {
     )
     if (!completedKata.length) {
       console.log("Nothing found to import!!!")
-      process.exitCode = 99
+      process.exitCode = 1
     }
 
     completedKata.forEach((kata: any) => {
@@ -57,8 +57,8 @@ async function getCompletedKatasJSON() {
         existingCompleted.kata.unshift(kata)
       }
       fs.writeFileSync(
-        join("./private/config/completedKata.ts"),
-        `export const completedKata = ${JSON.stringify(existingCompleted)}`,
+        join("./private/config/existingCompletedKata.ts"),
+        `export const existingCompleted = ${JSON.stringify(existingCompleted)}`,
         {
           flag: "w",
           encoding: "utf8",

@@ -56,8 +56,8 @@ export async function formatAndMergeSolutionData(kataID: string, kataLang: strin
             solutionCode[index].code +
             `${
               language === "python" || language === "coffeescript"
-                ? `\n\n#+ ${"=".repeat(117)}\n# ${"=".repeat(117)}\n\n${code}\n\n`
-                : `\n\n//+ ${"=".repeat(116)}\n// ${"=".repeat(116)}\n\n${code}\n\n`
+                ? `\n\n#+ ${"=".repeat(117)}\n#+ ${"=".repeat(117)}\n\n${code}\n\n`
+                : `\n\n//+ ${"=".repeat(116)}\n//+ ${"=".repeat(116)}\n\n${code}\n\n`
             }`
         }
       })
