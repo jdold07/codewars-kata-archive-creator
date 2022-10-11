@@ -23,10 +23,19 @@ const myLanguages = config.myLanguages
 // Fetch list of completed Katas for obtaining detail on completed languages & completion date etc
 async function getCompletedKatasJSON() {
   try {
-    const resCompletedKata = await Axios.get(
-      `http://www.codewars.com/api/v1/users/${config.userID}/code-challenges/completed?page=0`
-    )
-    const completedKata = resCompletedKata?.data?.data?.filter(
+    let page = 0
+    let resCompletedKata
+    let completedKataFullList: any = []
+
+    do {
+      resCompletedKata = await Axios.get(
+        `http://www.codewars.com/api/v1/users/${config.userID}/code-challenges/completed?page=${page}`
+      )
+      completedKataFullList = [...completedKataFullList, ...resCompletedKata.data.data]
+      page += 1
+    } while (page < resCompletedKata?.data?.totalPages)
+
+    const completedKata = completedKataFullList.filter(
       (v: any) =>
         !existingCompleted.kata.some((existing) => existing.id === v.id) ||
         !v.completedLanguages.every((completedLang: string) =>
@@ -35,6 +44,11 @@ async function getCompletedKatasJSON() {
           ].completedLanguages.includes(completedLang)
         )
     )
+    if (!completedKata.length) {
+      console.log("Nothing found to import!!!")
+      process.exitCode = 99
+    }
+
     completedKata.forEach((kata: any) => {
       if (existingCompleted.kata.find((v) => v.id === kata.id)) {
         existingCompleted.kata[existingCompleted.kata.findIndex((v) => v.id === kata.id)].completedLanguages =
@@ -42,11 +56,15 @@ async function getCompletedKatasJSON() {
       } else {
         existingCompleted.kata.unshift(kata)
       }
-      fs.writeFileSync(join("./private/config/completedKata.ts"), JSON.stringify(existingCompleted), {
-        flag: "w",
-        encoding: "utf8",
-        mode: 644
-      })
+      fs.writeFileSync(
+        join("./private/config/completedKata.ts"),
+        `export const completedKata = ${JSON.stringify(existingCompleted)}`,
+        {
+          flag: "w",
+          encoding: "utf8",
+          mode: 644
+        }
+      )
     })
     return completedKata
   } catch (err) {
@@ -70,6 +88,7 @@ async function processKatas() {
     }
   }
   console.log("Processing COMPLETE!  Check output path to confirm everything has completed as expected.")
+  process.exitCode = 0
 }
 
 /**
@@ -226,7 +245,7 @@ function generateMarkdownString(kata: any, completed: any): string {
 
 // Merge Kata solution/s code & tests code with Kata detail into a single object
 async function mergeData(kata: any, lang: string) {
-  const solutions = await formatAndMergeSolutionData()
+  const solutions = await formatAndMergeSolutionData(kata.id, lang)
   const index = solutions.findIndex((v: any) => v.id === kata.id && v.language === lang)
   console.log(`Added solution & tests code data for ${kata.slug} in ${lang}`)
   return Object.assign(kata, { code: solutions[index]?.code || "", tests: kataTests?.code })
