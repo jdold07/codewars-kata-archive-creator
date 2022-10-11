@@ -58,7 +58,7 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
   } catch (err) {
     console.warn(`Error creating /${kata.slug} directory\n${err}`)
   }
-  // Generate and write Kata description markdown file
+  // Generate and write Kata description markdown file //! Will OVERWRITE any existing
   try {
     fs.writeFileSync(join(fullPath, `${kata.slug}.md`), generateMarkdownString(kata, completionDetail), {
       flag: "w",
@@ -114,10 +114,10 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
           console.warn(`Error creating /${kata.slug}/${v} directory\n${err}`)
         }
 
-        // Generate & write solution code file
+        // Generate & write solution code file //! Will NOT write if file exists
         try {
           fs.writeFileSync(join(langPath, `${kataFilename}.${langExt}`), formatString(KATA, v, kataFilename, "code"), {
-            flag: "w",
+            flag: "wx",
             mode: 644
           })
           console.log(`Writing ${kataFilename}.${langExt} CODE file`)
@@ -125,12 +125,12 @@ function writePathsAndFiles(kata: any, fullPath: string, completionDetail: any) 
           console.warn(`Error writing ${kataFilename}.${langExt} CODE file\n${err}`)
         }
 
-        // Generate & write tests code file
+        // Generate & write tests code file //! Will NOT write if file exists
         try {
           fs.writeFileSync(
             join(langPath, v === "python" ? `${kataFilename}_test.${langExt}` : `${kataFilename}.Test.${langExt}`),
             formatString(KATA, v, kataFilename, "test"),
-            { flag: "w", mode: 644 }
+            { flag: "wx", mode: 644 }
           )
           console.log(`Writing ${kataFilename}.${langExt} TESTS file`)
         } catch (err) {
