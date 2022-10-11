@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { completedKata as existingCompleted } from "../../private/assets/completedKata"
+import { completedKata as existingCompleted } from "../../private/config/completedKata"
 import { formatAndMergeSolutionData } from "./getSolutionCode"
-import * as config from "../../private/components/config"
+import * as config from "../../private/config/config"
 import { format } from "prettier"
 import fs from "node:fs"
 import { join } from "node:path"

@@ -1,7 +1,7 @@
 import cheerio from "cheerio"
 import { format } from "prettier"
 import Axios from "axios"
-import * as config from "../../private/components/config"
+import * as config from "../../private/config/config"
 
 const solutionCode: {
   id: string | undefined
