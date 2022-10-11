@@ -24,7 +24,7 @@ async function getCompletedSolutions() {
 }
 
 // Extract individual language solutions code, format code block & push to solutionData array
-export async function formatAndMergeSolutionData() {
+export async function formatAndMergeSolutionData(kataID: string, kataLang: string) {
   const data: string = await getCompletedSolutions()
   try {
     const $ = cheerio.load(data)
@@ -34,6 +34,9 @@ export async function formatAndMergeSolutionData() {
       const url = "https://www.codewars.com" + $(elLi).find("a").attr("href")
       $("code", elLi).each((_, elCode) => {
         const language = $(elCode).attr("data-language")
+        if (id !== kataID && language !== kataLang) {
+          return // Trying to achieve the same effect that continue would have in a normal loop
+        }
         const parser = language === "javascript" ? "espree" : language === "typescript" ? "typescript" : undefined
         const code = parser
           ? format($(elCode).text(), { semi: false, printWidth: 125, trailingComma: "none", parser: parser })
