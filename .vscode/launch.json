@@ -10,28 +10,16 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"],
       "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
       "runtimeArgs": ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
     },
     {
-      "name": "vscode-jest-tests",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "cwd": "${workspaceFolder}",
-      "outFiles": ["${fileDirname}/out/*.js", "!**/node_modules/**"],
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "args": ["--"]
-    },
-    {
-      "name": "Mocha Tests with html Output",
+      "name": "Jest Debug Tests with nyc html Output",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/nyc/bin/nyc",
-      "console": "internalConsole",
-      "internalConsoleOptions": "openOnSessionStart",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
       "cwd": "${fileDirname}",
       "outFiles": ["${fileDirname}/out/*.js", "!**/node_modules/**"],
       "skipFiles": ["<node_internals>/**"],
@@ -61,9 +49,21 @@
       "type": "lldb",
       "request": "launch",
       "program": "${file}",
-      "cwd": "${workspaceFolder}",
       "console": "internalConsole",
       "args": []
+    },
+    {
+      "name": "vscode-jest-tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/nyc/bin/nyc",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${fileDirname}",
+      "outFiles": ["${fileDirname}/out/*.js", "!**/node_modules/**"],
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "args": ["--reporter=html", "npm", "run", "test", "${file}"]
     }
   ]
 }
