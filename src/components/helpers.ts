@@ -2,8 +2,11 @@
 import { getKataTest } from "./getKataTest"
 import processCodeBlockStrings from "./processCodeBlockStrings"
 import * as _ from "lodash"
+import path from "node:path"
+import * as config from "../../private/config/config"
+import * as writeKata from "./fileWrites"
 
-export function changeCase(slug: string, flag = "no"): string {
+export function changeCase(slug: string, flag = "c"): string {
   /**Helper function for filename case adjustments
    * Converts html slug name to language specific casing by convention
    * @Param slug <string> Kata name in slug format (eg this-kata-name)
@@ -31,4 +34,20 @@ export async function combineData(kataDetails: any, solutionsCode: any): Promise
       await Object.assign(_.cloneDeep(kataDetails), { curLang: language, code: languageSolution, tests: languageTest })
     )
   }
+}
+
+export async function finaliseWritePrep(kataData: any) {
+  /** Generate final variables required for directory generation for the
+   * specific language version of the current Kata.  Then make the calls to
+   * create necessary directory structure and write both code & test files
+   */
+  // Set language path
+  const langPath = path.join(kataData.kataPath, kataData.curLang)
+  // Set language file extension
+  const langExt = config.myLanguages.get(kataData.curLang)?.extension || kataData.curLang
+  // Set filename case type
+  const langFilename = kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
+  await writeKata.createLangDir(kataData, langPath)
+  await writeKata.writeUserSolutionFile(kataData, langPath, langFilename, langExt)
+  await writeKata.writeTestFile(kataData, langPath, langFilename, langExt)
 }

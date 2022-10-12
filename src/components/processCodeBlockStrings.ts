@@ -1,28 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import path from "node:path"
+import { finaliseWritePrep } from "./helpers"
 
-export default function processCodeBlockStrings(kataData: any) {
+export default function processCodeBlockStrings(kataData: any): void {
   // Format string for writing code file || test file
   switch (kataData.curLang) {
     case "typescript":
-      // Send the return of the function below to WriteFiles
-      typescriptFormatting(kataData)
+      finaliseWritePrep(typescriptFormatting(kataData))
+
       break
     case "javascript":
-      // Send the return of the function below to WriteFiles
-      javascriptFormatting(kataData)
+      finaliseWritePrep(javascriptFormatting(kataData))
+
       break
     case "swift":
-      // Send the return of the function below to WriteFiles
-      swiftFormatting(kataData)
+      finaliseWritePrep(swiftFormatting(kataData))
+
       break
     case "python":
-      // Send the return of the function below to WriteFiles
-      pythonFormatting(kataData)
+      finaliseWritePrep(pythonFormatting(kataData))
+
       break
     case "coffescript":
-      // Send the return of the function below to WriteFiles
-      coffeescriptFormatting(kataData)
+      finaliseWritePrep(coffeescriptFormatting(kataData))
+
       break
 
     default:
@@ -30,6 +31,10 @@ export default function processCodeBlockStrings(kataData: any) {
       console.error(`Error from processCodeBlockStrings(...) in ${path.basename(__filename)}`)
       throw Error(`UNKNOWN LANGUAGE while formatting code block string for ${kataData.slug} in ${kataData.curLang}`)
   }
+  console.log(
+    `Processing of ${kataData.slug} in ${kataData.curLang} complete\n    Check file output to verify content is as expected`
+  )
+  return
 }
 
 function typescriptFormatting(kataData: any) {
@@ -164,7 +169,7 @@ function slashCommentPreprocess(kataData: any) {
 
 function slashCommentReturn(kataData: any) {
   // Return formatted header & reconfigured CODE || TEST strings for DOUBLE FORWARD SLASH COMMENT languages
-  return ["code", "test"].map(
+  const codeBlockStrings = ["code", "test"].map(
     (flag) =>
       `//+ ${"=".repeat(116)}\n//+\n//+ ${kataData?.rank?.name} - ${kataData?.name}  [ ID: ${kataData?.id} ] (${
         kataData?.slug
@@ -172,6 +177,7 @@ function slashCommentReturn(kataData: any) {
         kataData?.tags?.join(" | ").toUpperCase() || "NONE"
       }\n//+\n//+ ${"=".repeat(116)}\n\n${(flag === "code" ? kataData?.code : kataData?.tests) || ""}\n`
   )
+  return Object.assign(kataData, { code: codeBlockStrings[0], tests: codeBlockStrings[1] })
 }
 
 function hashCommentPreprocess(kataData: any) {
@@ -186,7 +192,7 @@ function hashCommentPreprocess(kataData: any) {
 
 function hashCommentReturn(kataData: any) {
   // Return formatted header & reconfigured CODE || TEST strings for HASH COMMENT languages
-  return ["code", "test"].map(
+  const codeBlockStrings = ["code", "test"].map(
     (flag) =>
       `#+ ${"=".repeat(117)}\n#+\n#+ ${kataData?.rank?.name} - ${kataData?.name}  [ ID: ${kataData?.id} ] (${
         kataData?.slug
@@ -194,4 +200,5 @@ function hashCommentReturn(kataData: any) {
         kataData?.tags?.join(" | ").toUpperCase() || "NONE"
       }\n#+\n#+ ${"=".repeat(117)}\n\n${(flag === "code" ? kataData?.code : kataData?.tests) || ""}\n`
   )
+  return Object.assign(kataData, { code: codeBlockStrings[0], tests: codeBlockStrings[1] })
 }
