@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getKataTest } from "./getKataTest"
-import processCodeBlockStrings from "./processCodeBlockStrings"
+import processCodeStrings from "./processCodeStrings"
 import * as _ from "lodash"
 import path from "node:path"
 import * as config from "../../private/config/config"
@@ -30,7 +30,7 @@ export async function combineData(kataDetails: any, solutionsCode: any): Promise
     const index = await solutionsCode.findIndex((el: any) => el.id === kataDetails.id && el.language === language)
     const languageSolution = (await solutionsCode[index]?.code) || ""
     const languageTest = await getKataTest(kataDetails.id, language)
-    processCodeBlockStrings(
+    processCodeStrings(
       await Object.assign(_.cloneDeep(kataDetails), { curLang: language, code: languageSolution, tests: languageTest })
     )
   }
