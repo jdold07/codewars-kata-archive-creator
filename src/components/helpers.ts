@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getKataTest } from "./getKataTest"
 import processCodeStrings from "./processCodeStrings"
-import * as _ from "lodash"
-import path from "node:path"
 import * as config from "../../private/config/config"
 import * as writeKata from "./fileWrites"
+import _ from "lodash"
+import path from "node:path"
 
 export function changeCase(slug: string, flag = "c"): string {
   /**Helper function for filename case adjustments
