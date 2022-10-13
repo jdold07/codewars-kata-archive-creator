@@ -23,7 +23,7 @@ export default async () => {
       await Writes.createKataRootDir(kataDetailWithRankPath)
       const mdString = parseForMD(kataDetailWithRankPath)
       await Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
-      const combinedKataData = combineData(kataDetailWithRankPath, userSolutionsList)
+      const combinedKataData = await combineData(kataDetailWithRankPath, userSolutionsList)
       const kataDataProcessedCode = await processCodeStrings(combinedKataData)
       await runCodeWrites(kataDataProcessedCode)
     } catch (error) {
@@ -39,6 +39,6 @@ export default async () => {
     process.exitCode = 0
   } else {
     console.error(`Error executing kata2markdown App ... review config and try again`)
-    process.exit(1)
+    process.exitCode = 1
   }
 }

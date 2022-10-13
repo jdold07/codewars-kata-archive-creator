@@ -33,9 +33,9 @@ function typescriptFormatting(kataData: any, langFilename: string): any {
   // Remove existing exports on top level const & functions & any object exports
   kataData.code = kataData?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function))|({.*)?$)/g, "")
   // Append export object that includes all top level const and/or function names
-  kataData.code = `${kataData?.code}\n\nexport { ${
-    kataData?.code?.match(/(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\())/gm) || ["UNKNOWN"]?.join(", ")
-  } }`
+  kataData.code = `${kataData?.code}\n\nexport { ${(
+    kataData?.code?.match(/(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\())/gm) || ["UNKNOWN"]
+  )?.join(", ")} }`
 
   // TEST STRING - Reformat export, imports & test config for local use
 
@@ -60,10 +60,11 @@ function javascriptFormatting(kataData: any, langFilename: string): any {
   slashCommentPreprocess(kataData)
 
   // Append export object that includes all top level const and/or function names
-  kataData.code = `${kataData?.code}\n\nmodule.exports = { ${
-    kataData?.code?.match(/(?:(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\()))|^\w+(?=\s=[\s\n]+\()/gm) ||
-    ["UNKNOWN"]?.join(", ")
-  } }`
+  kataData.code = `${kataData?.code}\n\nmodule.exports = { ${(
+    kataData?.code?.match(/(?:(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\()))|^\w+(?=\s=[\s\n]+\()/gm) || [
+      "UNKNOWN"
+    ]
+  )?.join(", ")} }`
 
   // TEST STRING - Reformat export, imports & test config for local use
   // Remove any existing reference to require/import chai or ./solution

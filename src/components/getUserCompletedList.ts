@@ -22,7 +22,7 @@ export default async function getUserCompletedList(): Promise<any> {
   const fullUserCompletedList = await fetchUserCompletedList()
   const filteredCompletedKataList = await filterUserCompletedList(fullUserCompletedList)
   await updateUserCompletedDB(fullUserCompletedList)
-  return await filteredCompletedKataList
+  return filteredCompletedKataList
 }
 
 async function fetchUserCompletedList(): Promise<any> {
@@ -47,7 +47,7 @@ async function fetchUserCompletedList(): Promise<any> {
   }
 }
 
-function filterUserCompletedList(fullUserCompletedList: any[]) {
+async function filterUserCompletedList(fullUserCompletedList: any[]) {
   /**Filters complete list of completed Katas against the existing completed Kata DB
    * Filtered list provides detail of any Kata that is required to be added or
    * any Kata that requires updating due to a new language completion.
@@ -76,16 +76,16 @@ function filterUserCompletedList(fullUserCompletedList: any[]) {
   try {
     const filteredUserCompletedList = fullUserCompletedList.filter(
       (fullListKata: any) =>
-        !userCompletedDB.data.find((userListKata) => userListKata.id === fullListKata.id) ||
+        !userCompletedDB.find((userListKata: any) => userListKata.id === fullListKata.id) ||
         !fullListKata.completedLanguages.every((fullListLanguage: string) =>
-          userCompletedDB.data[
-            userCompletedDB.data.findIndex((userListKata) => userListKata.id === fullListKata.id)
+          userCompletedDB[
+            userCompletedDB.findIndex((userListKata: any) => userListKata.id === fullListKata.id)
           ].completedLanguages.includes(fullListLanguage)
         )
     )
     if (!filteredUserCompletedList.length) {
       console.log("Nothing found to import!!!")
-      process.exitCode = 1
+      process.exit(1)
     }
     return filteredUserCompletedList
   } catch (error) {

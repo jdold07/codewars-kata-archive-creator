@@ -32,10 +32,10 @@ export default function parseForMD(kataDetails: any): string {
           kataDetails?.approvedBy?.url || "*https://www.codewars.com*"
         })`
       },
-      { h5: `**Languages Available**: ${kataDetails?.languages?.path.join(", ") || "*not available*"}` },
+      { h5: `**Languages Available**: ${kataDetails?.languages?.join(", ") || "*not available*"}` },
       {
         h5: `**My Completed Languages**: ${
-          kataDetails?.completedLanguages?.path.join(", ") || "*not available*"
+          kataDetails?.completedLanguages?.join(", ") || "*not available*"
         } ***as at*** ${date} | **Originally completed**: ${kataDetails?.completedAt?.split("T")[0] || "*not available*"}`
       },
       { hr: "" },
@@ -46,7 +46,7 @@ export default function parseForMD(kataDetails: any): string {
           `# Ooops ... Description not available\n### Description was not available for [${kataDetails?.id}](${kataDetails?.url}) at the time of markdown generation.`
       },
       { hr: "" },
-      { p: `🏷 \`${kataDetails?.tags?.path.join(" | ").toUpperCase() || "NONE"}\`` },
+      { p: `🏷 \`${kataDetails?.tags?.join(" | ").toUpperCase() || "NONE"}\`` },
       { p: `[View this Kata on Codewars.com](${kataDetails?.url || "https://www.codewars.com"})` },
       { img: { title: "JDOld07 Codewars Badge", source: "https://www.codewars.com/users/jdold07/badges/large" } },
       { hr: "" },

@@ -2,6 +2,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import { userCompletedDBPath } from "../../private/config/config"
+import { format } from "prettier"
 
 export async function updateUserCompletedDB(fullUserCompletedList: any): Promise<void> {
   /** Write update to completed Kata database file with latest API import data
@@ -10,14 +11,19 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
    **/
   fs.writeFile(
     path.join(userCompletedDBPath),
-    `export const existingCompleted = ${JSON.stringify(fullUserCompletedList)}`,
+    format(`export const userCompletedDB = ${JSON.stringify(fullUserCompletedList)}`, {
+      semi: false,
+      printWidth: 125,
+      trailingComma: "none",
+      parser: "typescript"
+    }),
     { flag: "w", encoding: "utf8", mode: 644 },
     (error) => {
       if (error) {
         console.error(`Error from updateUserCompleteDB in ${path.basename(__filename)}`)
         throw Error(`Error writing ${userCompletedDBPath}\n${error}`)
       }
-      console.log(`Updating of ${path.basename(__filename)} was successful`)
+      console.log(`Updating of ${userCompletedDBPath} was successful`)
     }
   )
   return
