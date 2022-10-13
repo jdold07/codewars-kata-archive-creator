@@ -1,31 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import path from "node:path"
-import { finaliseWritePrep } from "./helpers"
+import { finaliseWritePrep, changeCase } from "./helpers"
 
-export default function processCodeBlockStrings(kataData: any): void {
+export default function processCodeStrings(kataData: any): void {
   // Format string for writing code file || test file
+  const langFilename = kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
+
   switch (kataData.curLang) {
     case "typescript":
-      finaliseWritePrep(typescriptFormatting(kataData))
-
+      finaliseWritePrep(typescriptFormatting(kataData, langFilename))
       break
     case "javascript":
-      finaliseWritePrep(javascriptFormatting(kataData))
-
+      finaliseWritePrep(javascriptFormatting(kataData, langFilename))
       break
     case "swift":
-      finaliseWritePrep(swiftFormatting(kataData))
-
+      finaliseWritePrep(swiftFormatting(kataData, langFilename))
       break
     case "python":
-      finaliseWritePrep(pythonFormatting(kataData))
-
+      finaliseWritePrep(pythonFormatting(kataData, langFilename))
       break
     case "coffescript":
-      finaliseWritePrep(coffeescriptFormatting(kataData))
-
+      finaliseWritePrep(coffeescriptFormatting(kataData, langFilename))
       break
-
     default:
       //! CATCHALL - Should not ever hit this!  Provides a default return or break for TS
       console.error(`Error from processCodeBlockStrings(...) in ${path.basename(__filename)}`)
@@ -37,7 +33,7 @@ export default function processCodeBlockStrings(kataData: any): void {
   return
 }
 
-function typescriptFormatting(kataData: any) {
+function typescriptFormatting(kataData: any, langFilename: string) {
   // ?TypeScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -61,12 +57,12 @@ function typescriptFormatting(kataData: any) {
   // Insert import for Chai & CODE file/module
   kataData.tests = `\nimport { assert } from ("chai")\nimport { ${
     (kataData?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
-  } } from ("./${fileName}")\n\n${kataData?.tests}\n`
+  } } from ("./${langFilename}")\n\n${kataData?.tests}\n`
 
   return slashCommentReturn(kataData)
 }
 
-function javascriptFormatting(kataData: any) {
+function javascriptFormatting(kataData: any, langFilename: string) {
   //? JavaScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -100,14 +96,15 @@ function javascriptFormatting(kataData: any) {
     cwUtilMethods.length ? `\nconst { ${cwUtilMethods.join(", ")} } = require("../../../utils/cwUtils")` : ""
   }\nconst { assert${/Test.expect/.test(kataData?.tests) ? ", expect" : ""} } = require("chai")\nconst { ${
     (kataData?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
-  } } = require("./${fileName}")\n\n${kataData?.tests}\n`
+  } } = require("./${langFilename}")\n\n${kataData?.tests}\n`
   // Remove any existing reference to Test
   kataData.tests = kataData?.tests.replace(/\bTest\./g, "")
 
   return slashCommentReturn(kataData)
 }
 
-function swiftFormatting(kataData: any) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function swiftFormatting(kataData: any, langFilename: string) {
   //? Swift specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
   slashCommentPreprocess(kataData)
@@ -116,7 +113,7 @@ function swiftFormatting(kataData: any) {
   return slashCommentReturn(kataData)
 }
 
-function pythonFormatting(kataData: any) {
+function pythonFormatting(kataData: any, langFilename: string) {
   //? Python specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -126,14 +123,14 @@ function pythonFormatting(kataData: any) {
   // Remove any existing import of Codewars framework & import of "solution" module
   kataData.tests = kataData?.tests.replace(/import codewars_test as test/g, "").replace(/from solution import \w+/g, "")
   // Insert import for Codewars python test framework & import CODE module to TEST
-  kataData.tests = `import codewars_test as test\nfrom ${fileName} import ${
+  kataData.tests = `import codewars_test as test\nfrom ${langFilename} import ${
     (kataData?.tests?.match(/(?<=equals\()(\w+)(?=\()/) || ["UNKNOWN"])[0]
   }\n\n\n${kataData.tests}`
 
   return hashCommentReturn(kataData)
 }
 
-function coffeescriptFormatting(kataData: any) {
+function coffeescriptFormatting(kataData: any, langFilename: string) {
   //? CoffeeScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -153,7 +150,7 @@ function coffeescriptFormatting(kataData: any) {
   // Insert import for Chai & CODE file/module
   kataData.tests = `\n{ assert } = require "chai"\n{ ${
     (kataData?.tests.match(/(?<=assert\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\)|\())/) || ["UNKNOWN"])[0]
-  } } = require "./${fileName}"\n\n${kataData?.tests}\n`
+  } } = require "./${langFilename}"\n\n${kataData?.tests}\n`
 
   return hashCommentReturn(kataData)
 }
