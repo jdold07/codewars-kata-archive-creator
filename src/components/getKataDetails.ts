@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios"
 import path from "path"
-import * as config from "../../private/config/config"
+import { rootPath } from "../../private/config/config"
 
 export default async function getKataDetails(filteredCompletedKatas: Promise<any>): Promise<any> {
   /** Fetch completed kata detail from Codewars API & process folders & markdown description file
@@ -22,10 +22,9 @@ export default async function getKataDetails(filteredCompletedKatas: Promise<any
       // Add an underscore to the beginning of any slug that starts with a number for path compatibility
       response.data.slug = await response.data.slug.replace(/^(\d)/, "_$1")
       const kataRankDirName = `kata-${Math.abs(response.data.rank.id) || "beta"}-kyu`
-      const kataPath: string = path.join(config.rootPath, kataRankDirName, response.data.slug)
-      const addDetail = { kataRankDirName: kataRankDirName, kataPath: kataPath }
+      const kataPath: string = path.join(rootPath, kataRankDirName, response.data.slug)
 
-      return await Object.assign({}, kata, response.data, addDetail)
+      return await Object.assign({}, kata, response.data, { kataRankDirName: kataRankDirName, kataPath: kataPath })
     } catch (error) {
       console.error(`Error from getKataDetails() in ${path.basename(__filename)}`)
       throw Error(`Error collating kata detail for ${kata.slug}\n${error}`)

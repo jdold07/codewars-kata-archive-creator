@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getKataTest } from "./getKataTest"
-import processCodeStrings from "./processCodeStrings"
 import * as config from "../../private/config/config"
-import * as writeKata from "./fileWrites"
+import * as Writes from "./writeToFile"
 import _ from "lodash"
 import path from "node:path"
 
@@ -18,7 +17,7 @@ export function changeCase(slug: string, flag = "c"): string {
     : slug.replace(/-/g, "_")
 }
 
-export async function combineData(kataDetails: any, solutionsCode: any): Promise<void> {
+export async function combineData(kataDetails: any, solutionsCode: any): Promise<any> {
   /** Match user solution/s & test data to the currently processing Kata & write to files
    * @Step 1 - Create a loop to cycle all languages in filteredKataDetails.completedLanguages
    * @Step 2 - For each completed language:
@@ -30,14 +29,12 @@ export async function combineData(kataDetails: any, solutionsCode: any): Promise
     const index = await solutionsCode.findIndex((el: any) => el.id === kataDetails.id && el.language === language)
     const languageSolution = (await solutionsCode[index]?.code) || ""
     const languageTest = await getKataTest(kataDetails.id, language)
-    processCodeStrings(
-      await Object.assign(_.cloneDeep(kataDetails), { curLang: language, code: languageSolution, tests: languageTest })
-    )
+    return await Object.assign(_.cloneDeep(kataDetails), { curLang: language, code: languageSolution, tests: languageTest })
   }
 }
 
-export async function finaliseWritePrep(kataData: any) {
-  /** Generate final variables required for directory generation for the
+export async function runCodeWrites(kataData: any): Promise<void> {
+  /** Generate final variables required for directory creation for the
    * specific language version of the current Kata.  Then make the calls to
    * create necessary directory structure and write both code & test files
    */
@@ -47,7 +44,8 @@ export async function finaliseWritePrep(kataData: any) {
   const langExt = config.myLanguages.get(kataData.curLang)?.extension || kataData.curLang
   // Set filename case type
   const langFilename = kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
-  await writeKata.createLangDir(kataData, langPath)
-  await writeKata.writeUserSolutionFile(kataData, langPath, langFilename, langExt)
-  await writeKata.writeTestFile(kataData, langPath, langFilename, langExt)
+  await Writes.createLangDir(kataData, langPath)
+  await Writes.writeUserSolutionFile(kataData, langPath, langFilename, langExt)
+  await Writes.writeTestFile(kataData, langPath, langFilename, langExt)
+  return
 }

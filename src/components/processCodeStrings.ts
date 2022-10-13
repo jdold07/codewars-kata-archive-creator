@@ -1,39 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import path from "node:path"
-import { finaliseWritePrep, changeCase } from "./helpers"
+import { changeCase } from "./helpers"
 
-export default function processCodeStrings(kataData: any): void {
+export default function processCodeStrings(kataData: any): any {
   // Format string for writing code file || test file
   const langFilename = kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
 
   switch (kataData.curLang) {
     case "typescript":
-      finaliseWritePrep(typescriptFormatting(kataData, langFilename))
-      break
+      return typescriptFormatting(kataData, langFilename)
     case "javascript":
-      finaliseWritePrep(javascriptFormatting(kataData, langFilename))
-      break
+      return javascriptFormatting(kataData, langFilename)
     case "swift":
-      finaliseWritePrep(swiftFormatting(kataData, langFilename))
-      break
+      return swiftFormatting(kataData, langFilename)
     case "python":
-      finaliseWritePrep(pythonFormatting(kataData, langFilename))
-      break
+      return pythonFormatting(kataData, langFilename)
     case "coffescript":
-      finaliseWritePrep(coffeescriptFormatting(kataData, langFilename))
-      break
+      return coffeescriptFormatting(kataData, langFilename)
     default:
       //! CATCHALL - Should not ever hit this!  Provides a default return or break for TS
-      console.error(`Error from processCodeBlockStrings(...) in ${path.basename(__filename)}`)
-      throw Error(`UNKNOWN LANGUAGE while formatting code block string for ${kataData.slug} in ${kataData.curLang}`)
+      console.error(`Error from processCodeStrings(...) in ${path.basename(__filename)}`)
+      throw Error(`LANGUAGE NOT FOUND while formatting strings for ${kataData.slug} in ${kataData.curLang}`)
   }
-  console.log(
-    `Processing of ${kataData.slug} in ${kataData.curLang} complete\n    Check file output to verify content is as expected`
-  )
-  return
 }
 
-function typescriptFormatting(kataData: any, langFilename: string) {
+function typescriptFormatting(kataData: any, langFilename: string): any {
   // ?TypeScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -62,7 +53,7 @@ function typescriptFormatting(kataData: any, langFilename: string) {
   return slashCommentReturn(kataData)
 }
 
-function javascriptFormatting(kataData: any, langFilename: string) {
+function javascriptFormatting(kataData: any, langFilename: string): any {
   //? JavaScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -104,7 +95,7 @@ function javascriptFormatting(kataData: any, langFilename: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function swiftFormatting(kataData: any, langFilename: string) {
+function swiftFormatting(kataData: any, langFilename: string): any {
   //? Swift specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
   slashCommentPreprocess(kataData)
@@ -113,7 +104,7 @@ function swiftFormatting(kataData: any, langFilename: string) {
   return slashCommentReturn(kataData)
 }
 
-function pythonFormatting(kataData: any, langFilename: string) {
+function pythonFormatting(kataData: any, langFilename: string): any {
   //? Python specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -130,7 +121,7 @@ function pythonFormatting(kataData: any, langFilename: string) {
   return hashCommentReturn(kataData)
 }
 
-function coffeescriptFormatting(kataData: any, langFilename: string) {
+function coffeescriptFormatting(kataData: any, langFilename: string): any {
   //? CoffeeScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
@@ -154,7 +145,7 @@ function coffeescriptFormatting(kataData: any, langFilename: string) {
 
   return hashCommentReturn(kataData)
 }
-function slashCommentPreprocess(kataData: any) {
+function slashCommentPreprocess(kataData: any): any {
   //? COMMON to all DOUBLE FORWARD SLASH COMMENT languages
   // TEST STRING - Reformat export, imports & test config for local use
   // Remove initial any default comment block
@@ -164,7 +155,7 @@ function slashCommentPreprocess(kataData: any) {
   return kataData
 }
 
-function slashCommentReturn(kataData: any) {
+function slashCommentReturn(kataData: any): any {
   // Return formatted header & reconfigured CODE || TEST strings for DOUBLE FORWARD SLASH COMMENT languages
   const codeBlockStrings = ["code", "test"].map(
     (flag) =>
@@ -177,7 +168,7 @@ function slashCommentReturn(kataData: any) {
   return Object.assign(kataData, { code: codeBlockStrings[0], tests: codeBlockStrings[1] })
 }
 
-function hashCommentPreprocess(kataData: any) {
+function hashCommentPreprocess(kataData: any): any {
   //? COMMON to all HASH COMMENT languages
   // TEST STRING - Reformat export, imports & test config for local use
   // Remove initial any default comment block
@@ -187,7 +178,7 @@ function hashCommentPreprocess(kataData: any) {
   return kataData
 }
 
-function hashCommentReturn(kataData: any) {
+function hashCommentReturn(kataData: any): any {
   // Return formatted header & reconfigured CODE || TEST strings for HASH COMMENT languages
   const codeBlockStrings = ["code", "test"].map(
     (flag) =>

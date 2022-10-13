@@ -5,12 +5,6 @@ import Axios from "axios"
 import * as config from "../../private/config/config"
 import path from "node:path"
 
-const userSolutionsList: {
-  id: string | undefined
-  language: string | undefined
-  code: string | undefined
-}[] = []
-
 async function getUserSolutionsList(): Promise<any> {
   /** Fetch completed solutions from codewars.com/users/profile/completed_solutions
    * from within the user profile section on codewars.com
@@ -34,6 +28,12 @@ export default async function processUserSolutions(): Promise<
    * then push to a solutions array to be accessed in the file write process.
    **/
   const data: string = await getUserSolutionsList()
+  const userSolutionsList: {
+    id: string | undefined
+    language: string | undefined
+    code: string | undefined
+  }[] = []
+
   try {
     const $ = cheerio.load(data)
     $(".list-item-solutions", data).each((_, listItemSolutions) => {
@@ -64,7 +64,7 @@ export default async function processUserSolutions(): Promise<
       })
     })
   } catch (error) {
-    console.error(`Error from formatAndMergeSolutionData() in ${path.basename(__filename)}`)
+    console.error(`Error from getUserSolutionsList() in ${path.basename(__filename)}`)
     throw new Error(`Error formatting user solutions\n${error}`)
   }
   console.log(
