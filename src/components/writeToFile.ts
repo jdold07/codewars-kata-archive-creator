@@ -29,33 +29,33 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
   return
 }
 
-export async function createKataRootDir(kataDetails: any): Promise<void> {
+export function createKataRootDir(kataDetails: any): void {
   /** Create individual Kata root directory that will hold each completed
    * language specific directory related to the Kata
    **/
-  fs.mkdir(await kataDetails.kataPath, { recursive: true, mode: 755 }, (error) => {
-    if (error) {
-      console.error(`Error from createKataRootDir() in ${path.basename(__filename)}`)
-      throw Error(`Error creating ${kataDetails.kataPath}\n${error}`)
-    }
-    console.log(`${kataDetails.kataPath} is ready`)
-  })
+  try {
+    fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 755 })
+  } catch (error) {
+    console.error(`Error from createKataRootDir() in ${path.basename(__filename)}`)
+    throw Error(`Error creating ${kataDetails.kataPath}\n${error}`)
+  }
+  console.log(`${kataDetails.kataPath} is ready`)
   return
 }
 
-export async function createLangDir(kataDetails: any, langPath: string): Promise<void> {
+export function createLangDir(kataDetails: any, langPath: string): void {
   // Create individual Kata language path
-  fs.mkdir(langPath, { recursive: true, mode: 755 }, (error) => {
-    if (error) {
-      console.error(`Error from createLangDir() in ${path.basename(__filename)}`)
-      throw Error(`Error creating ${kataDetails.slug}/${kataDetails.curLang}\n${error}`)
-    }
-    console.log(`${kataDetails.slug}/${kataDetails.curLang} is ready`)
-  })
+  try {
+    fs.mkdirSync(langPath, { recursive: true, mode: 755 })
+  } catch (error) {
+    console.error(`Error from createLangDir() in ${path.basename(__filename)}`)
+    throw Error(`Error creating ${kataDetails.slug}/${kataDetails.curLang}\n${error}`)
+  }
+  console.log(`${kataDetails.slug}/${kataDetails.curLang} is ready`)
   return
 }
 
-export async function writeKataMarkdownFile(kataDetails: any, mdString: string): Promise<void> {
+export function writeKataMarkdownFile(kataDetails: any, mdString: string): void {
   /** Call to generate Kata markdown description layout & write file to disk
    * !Currently set to OVERWRITE existing markdown description
    **/
@@ -69,12 +69,7 @@ export async function writeKataMarkdownFile(kataDetails: any, mdString: string):
   return
 }
 
-export async function writeUserSolutionFile(
-  kataData: any,
-  langPath: string,
-  langFilename: string,
-  langExt: string
-): Promise<void> {
+export function writeUserSolutionFile(kataData: any, langPath: string, langFilename: string, langExt: string): void {
   /** Write user solution code block/s to file
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, new solutions for an existing language will be lost
@@ -96,7 +91,7 @@ export async function writeUserSolutionFile(
   return
 }
 
-export async function writeTestFile(kataData: any, langPath: string, langFilename: string, langExt: string): Promise<void> {
+export function writeTestFile(kataData: any, langPath: string, langFilename: string, langExt: string): void {
   /** Write test code block/s to file
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, no updates or changes to tests for an existing language will occur

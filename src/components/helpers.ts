@@ -33,7 +33,7 @@ export async function combineData(kataDetails: any, userSolutionsList: any): Pro
   }
 }
 
-export async function runCodeWrites(kataData: any): Promise<void> {
+export function runCodeWrites(kataData: any): void {
   /** Generate final variables required for directory creation for the
    * specific language version of the current Kata.  Then make the calls to
    * create necessary directory structure and write both code & test files
@@ -44,8 +44,8 @@ export async function runCodeWrites(kataData: any): Promise<void> {
   const langExt = config.myLanguages.get(kataData.curLang)?.extension || kataData.curLang
   // Set filename case type
   const langFilename = kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
-  await Writes.createLangDir(kataData, langPath)
-  await Writes.writeUserSolutionFile(kataData, langPath, langFilename, langExt)
-  await Writes.writeTestFile(kataData, langPath, langFilename, langExt)
+  Writes.createLangDir(kataData, langPath)
+  Writes.writeUserSolutionFile(kataData, langPath, langFilename, langExt)
+  Writes.writeTestFile(kataData, langPath, langFilename, langExt)
   return
 }

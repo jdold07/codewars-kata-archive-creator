@@ -19,13 +19,17 @@ export default async () => {
     try {
       const filteredUserCompletedList = await getUserCompletedList()
       const userSolutionsList = await processUserSolutions()
-      const kataDetailWithRankPath = await getKataDetails(filteredUserCompletedList)
-      await Writes.createKataRootDir(kataDetailWithRankPath)
-      const mdString = parseForMD(kataDetailWithRankPath)
-      await Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
-      const combinedKataData = await combineData(kataDetailWithRankPath, userSolutionsList)
-      const kataDataProcessedCode = await processCodeStrings(combinedKataData)
-      await runCodeWrites(kataDataProcessedCode)
+      for (const kata of filteredUserCompletedList) {
+        const kataDetailWithRankPath = await getKataDetails(kata)
+        //TODO Make the kata root directory creation & markdown write only run once per Kata ID.
+        //TODO At the moment this runs unnecessarily for every language a Kata has been completed in.
+        Writes.createKataRootDir(kataDetailWithRankPath)
+        const mdString = parseForMD(kataDetailWithRankPath)
+        Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
+        const combinedKataData = await combineData(kataDetailWithRankPath, userSolutionsList)
+        const kataDataProcessedCode = processCodeStrings(combinedKataData)
+        runCodeWrites(kataDataProcessedCode)
+      }
     } catch (error) {
       if (error) {
         console.error(`Error executing kata2markdown App ... review config and try again`)

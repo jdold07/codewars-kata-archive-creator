@@ -20,7 +20,7 @@ export default async function getUserCompletedList(): Promise<any> {
    *    }[]
    */
   const fullUserCompletedList = await fetchUserCompletedList()
-  const filteredCompletedKataList = await filterUserCompletedList(fullUserCompletedList)
+  const filteredCompletedKataList = filterUserCompletedList(fullUserCompletedList)
   await updateUserCompletedDB(fullUserCompletedList)
   return filteredCompletedKataList
 }
@@ -47,7 +47,7 @@ async function fetchUserCompletedList(): Promise<any> {
   }
 }
 
-async function filterUserCompletedList(fullUserCompletedList: any[]) {
+function filterUserCompletedList(fullUserCompletedList: any[]): any[] {
   /**Filters complete list of completed Katas against the existing completed Kata DB
    * Filtered list provides detail of any Kata that is required to be added or
    * any Kata that requires updating due to a new language completion.
