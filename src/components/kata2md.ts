@@ -10,7 +10,7 @@ import { combineData, runCodeWrites } from "./helpers"
 import processCodeStrings from "./processCodeStrings"
 
 // Axios request throttling to prevent too many requests error from codewars.com on large imports
-// ?Not sure this has any effect here (or now) because all axios calls have been separated
+// ?Not sure this has any effect now (here) because all axios calls have been separated out to components
 axiosThrottle.use(axios, { requestsPerSecond: 5 })
 
 // Main app
