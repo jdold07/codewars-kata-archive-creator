@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { userCompletedDB } from "../../private/config/userCompletedDB"
-import { userID } from "../../private/config/config"
+import { userCompletedDB } from "../../config/userCompletedDB"
+import { userID } from "../../config/config"
 import { updateUserCompletedDB } from "./writeToFile"
 import axios from "axios"
 import path from "node:path"

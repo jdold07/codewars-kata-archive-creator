@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios"
 import path from "path"
-import { rootPath } from "../../private/config/config"
+import { rootPath } from "../../config/config"
 
 export default async function getKataDetails(kata: any): Promise<any> {
   /** Fetch completed kata detail from Codewars API & process folders & markdown description file

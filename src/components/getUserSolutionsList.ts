@@ -2,7 +2,7 @@
 import cheerio from "cheerio"
 import { format } from "prettier"
 import Axios from "axios"
-import * as config from "../../private/config/config"
+import * as config from "../../config/config"
 import path from "node:path"
 
 async function getUserSolutionsList(): Promise<any> {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getKataTest } from "./getKataTest"
-import * as config from "../../private/config/config"
+import * as config from "../../config/config"
 import * as Writes from "./writeToFile"
 import _ from "lodash"
 import path from "node:path"

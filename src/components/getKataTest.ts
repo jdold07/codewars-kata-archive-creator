@@ -3,7 +3,7 @@ import axios from "axios"
 import cheerio from "cheerio"
 import path from "path"
 import { format } from "prettier"
-import * as config from "../../private/config/config"
+import * as config from "../../config/config"
 
 export async function getKataTest(id: string, language: string): Promise<string> {
   /** Fetch test code from Codewars.com language specific kata solutions page.

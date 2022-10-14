@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from "node:fs"
 import path from "node:path"
-import { userCompletedDBPath } from "../../private/config/config"
+import { userCompletedDBPath } from "../../config/config"
 import { format } from "prettier"
 
 export async function updateUserCompletedDB(fullUserCompletedList: any): Promise<void> {
