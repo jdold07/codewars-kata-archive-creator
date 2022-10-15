@@ -46,7 +46,7 @@ function typescriptFormatting(kataData: any, langFilename: string): any {
   // Remove any existing reference to require/import chai or ./solution
   kataData.tests = kataData?.tests.replace(/^.*(?:chai|\.\/solution).*$/gm, "")
   // Remove any existing reference in assertions for "solution."
-  kataData.test = kataData?.tests.replace(/solution\./g, "")
+  kataData.tests = kataData?.tests.replace(/solution\./g, "")
   // Insert import for Chai & CODE file/module
   kataData.tests = `\nimport { assert } from ("chai")\nimport { ${
     (kataData?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
@@ -72,7 +72,7 @@ function javascriptFormatting(kataData: any, langFilename: string): any {
   // Remove any existing reference to require/import chai or ./solution
   kataData.tests = kataData?.tests.replace(/^.*(?:chai|\.\/solution).*$/gm, "")
   // Remove any existing reference in assertions for "solution."
-  kataData.test = kataData?.tests.replace(/solution\./g, "")
+  kataData.tests = kataData?.tests.replace(/solution\./g, "")
   // Replace assertions with Chai types
   kataData.tests = kataData?.tests
     .replace(/expectError/g, "assert.throws")
