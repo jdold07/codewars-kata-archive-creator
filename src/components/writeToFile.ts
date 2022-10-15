@@ -81,7 +81,7 @@ export function writeUserSolutionFile(kataData: any, langPath: string, langFilen
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.warn(`${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`)
+          console.log(`${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`)
           return
         }
         console.warn(`WARNING from writeUserSolutionFile(...) in ${path.basename(__filename)}`)
@@ -109,7 +109,7 @@ export function writeTestFile(kataData: any, langPath: string, langFilename: str
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.warn(`${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`)
+          console.log(`${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`)
           return
         }
         console.warn(`WARNING from writeTestFile(...) in ${path.basename(__filename)}`)
