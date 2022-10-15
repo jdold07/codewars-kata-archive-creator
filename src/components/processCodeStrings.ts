@@ -31,7 +31,7 @@ function typescriptFormatting(kataData: any, langFilename: string): any {
   slashCommentPreprocess(kataData)
 
   // Remove existing exports on top level const & functions & any object exports
-  kataData.code = kataData?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function))|({.*)?$)/g, "")
+  kataData.code = kataData?.code.replace(/^export\s(?:(?:default\s)?(?=(?:const|let|var|function|class))|({.*)?$)/g, "")
   // Append export object that includes all top level const and/or function names
   kataData.code = `${kataData?.code}\n\nexport { ${(
     kataData?.code?.match(/(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\())/gm) || ["UNKNOWN"]
@@ -44,7 +44,9 @@ function typescriptFormatting(kataData: any, langFilename: string): any {
   // Replace assertions with Chai types
   // currentKataData.tests = currentKataData?.tests.replace(/assert.equal/g, "assert.strictEqual")
   // Remove any existing reference to require/import chai or ./solution
-  kataData.tests = kataData?.tests.replace(/^.*(?:chai).*$/gm, "").replace(/^.*(?:"\.\/).*$/gm, "")
+  kataData.tests = kataData?.tests.replace(/^.*(?:chai|\.\/solution).*$/gm, "")
+  // Remove any existing reference in assertions for "solution."
+  kataData.test = kataData?.tests.replace(/solution\./g, "")
   // Insert import for Chai & CODE file/module
   kataData.tests = `\nimport { assert } from ("chai")\nimport { ${
     (kataData?.tests.match(/(?<=(?:assert|expect)\.\w+(?:\s|\s?\())(\w+)(?=(?:\s|\s?\())/) || ["UNKNOWN"])[0]
@@ -68,7 +70,9 @@ function javascriptFormatting(kataData: any, langFilename: string): any {
 
   // TEST STRING - Reformat export, imports & test config for local use
   // Remove any existing reference to require/import chai or ./solution
-  kataData.tests = kataData?.tests.replace(/^.*(?:chai).*$/gm, "").replace(/^.*(?:"\.\/).*$/gm, "")
+  kataData.tests = kataData?.tests.replace(/^.*(?:chai|\.\/solution).*$/gm, "")
+  // Remove any existing reference in assertions for "solution."
+  kataData.test = kataData?.tests.replace(/solution\./g, "")
   // Replace assertions with Chai types
   kataData.tests = kataData?.tests
     .replace(/expectError/g, "assert.throws")
