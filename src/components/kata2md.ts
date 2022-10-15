@@ -26,9 +26,11 @@ export default async () => {
         Writes.createKataRootDir(kataDetailWithRankPath)
         const mdString = parseForMD(kataDetailWithRankPath)
         Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
-        const combinedKataData = await combineData(kataDetailWithRankPath, userSolutionsList)
-        const kataDataProcessedCode = processCodeStrings(combinedKataData)
-        runCodeWrites(kataDataProcessedCode)
+        for await (const language of kataDetailWithRankPath.completedLanguages) {
+          const combinedKataData = await combineData(kataDetailWithRankPath, userSolutionsList, language)
+          const kataDataProcessedCode = processCodeStrings(combinedKataData)
+          runCodeWrites(kataDataProcessedCode)
+        }
       }
     } catch (error) {
       if (error) {
@@ -42,7 +44,7 @@ export default async () => {
     console.log("Processing COMPLETE!  Check output path to confirm everything has completed as expected.")
     process.exitCode = 0
   } else {
-    console.error(`Error executing kata2markdown App ... review config and try again`)
+    console.error(`Error while processing ... review config and try again`)
     process.exitCode = 1
   }
 }

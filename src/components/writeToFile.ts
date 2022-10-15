@@ -80,9 +80,12 @@ export function writeUserSolutionFile(kataData: any, langPath: string, langFilen
     { flag: "wx", encoding: "utf8", mode: 644 },
     (error) => {
       if (error) {
+        if (error.code === "EEXIST") {
+          console.warn(`${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`)
+          return
+        }
         console.warn(`WARNING from writeUserSolutionFile(...) in ${path.basename(__filename)}`)
         console.warn(`While writing ${langFilename}.${langExt} CODE file\n${error}`)
-        //todo No throw because if file exists, error will exist.  Need to determine the file exist error and catch everything but into a throw Error
       } else {
         console.log(`Writing of ${langFilename}.${langExt} CODE file was successful.`)
       }
@@ -105,9 +108,12 @@ export function writeTestFile(kataData: any, langPath: string, langFilename: str
     { flag: "wx", encoding: "utf8", mode: 644 },
     (error) => {
       if (error) {
+        if (error.code === "EEXIST") {
+          console.warn(`${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`)
+          return
+        }
         console.warn(`WARNING from writeTestFile(...) in ${path.basename(__filename)}`)
         console.warn(`While writing ${langFilename}.${langExt} TEST file\n${error}`)
-        //todo No throw because if file exists, error will exist.  Need to determine the file exist error and catch everything but into a throw Error
       } else {
         console.log(`Writing of ${langFilename}.${langExt} TEST file was successful.`)
       }

@@ -17,7 +17,7 @@ export function changeCase(slug: string, flag = "c"): string {
     : slug.replace(/-/g, "_")
 }
 
-export async function combineData(kataDetails: any, userSolutionsList: any): Promise<any> {
+export async function combineData(kataDetails: any, userSolutionsList: any, language: string): Promise<any> {
   /** Match user solution/s & test data to the currently processing Kata & write to files
    * @Step 1 - Create a loop to cycle all languages in filteredKataDetails.completedLanguages
    * @Step 2 - For each completed language:
@@ -25,12 +25,10 @@ export async function combineData(kataDetails: any, userSolutionsList: any): Pro
    *  @Step 2b - Make web-scrape request for current ID & language test code from codewars.com
    *  @Step 2c - Make call to fileWrite method for kata test code
    **/
-  for (const language of kataDetails.completedLanguages) {
-    const index = await userSolutionsList.findIndex((el: any) => el.id === kataDetails.id && el.language === language)
-    const languageSolution = (await userSolutionsList[index]?.code) || ""
-    const languageTest = await getKataTest(kataDetails.id, language)
-    return await Object.assign(_.cloneDeep(kataDetails), { curLang: language, code: languageSolution, tests: languageTest })
-  }
+  const index = await userSolutionsList.findIndex((el: any) => el.id === kataDetails.id && el.language === language)
+  const languageSolution = (await userSolutionsList[index]?.code) || ""
+  const languageTest = await getKataTest(kataDetails.id, language)
+  return await Object.assign(_.cloneDeep(kataDetails), { curLang: language, code: languageSolution, tests: languageTest })
 }
 
 export function runCodeWrites(kataData: any): void {
