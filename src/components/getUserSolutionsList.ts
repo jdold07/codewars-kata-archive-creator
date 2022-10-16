@@ -123,7 +123,7 @@ async function getUserSolutionsAllPages() {
     const page = await browser.newPage()
     await page.setExtraHTTPHeaders({ cookie: config.sessionID })
     await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
-    const delay = 3000
+    const delay = 1000
     let preCount = 0
     let postCount = 0
     do {
