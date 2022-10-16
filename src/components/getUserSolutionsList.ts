@@ -129,12 +129,12 @@ async function getUserSolutionsAllPages() {
     let postCount = 0
     do {
       preCount = await getCount(page)
-      await scrollDown(page)
-      await new Promise((res) => setTimeout(res, delay))
-      postCount = await getCount(page)
       process.stdout.clearLine(0)
       // process.stdout.cursorTo(0)
       process.stdout.write(`${preCount} solutions from ${++pageCount} pages so far...`)
+      await scrollDown(page)
+      await new Promise((res) => setTimeout(res, delay))
+      postCount = await getCount(page)
     } while (postCount > preCount)
     // await new Promise((res) => setTimeout(res, delay))
     const pageData = await page.evaluate(() => {
