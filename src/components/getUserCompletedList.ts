@@ -6,7 +6,8 @@ import axios from "axios"
 import path from "node:path"
 
 export default async function getUserCompletedList(): Promise<any> {
-  /**Entry point for fetching new/current Completed Kata List from API
+  /**
+   * Entry point for fetching new/current Completed Kata List from API
    * Step 1 - Fetch current complete list of Completed Kata List from API
    * Step 2 - Filter the collected list against existing completed Kata DB
    * Step 3 - Write updates to existing completed Kata DB
@@ -26,7 +27,8 @@ export default async function getUserCompletedList(): Promise<any> {
 }
 
 async function fetchUserCompletedList(): Promise<any> {
-  /**Fetch latest current list of completed Katas
+  /**
+   * Fetch latest current list of completed Katas
    * Used to assert which Katas need downloading of Kata Detail from API &
    * for completion date & completed languages info
    **/
@@ -48,7 +50,8 @@ async function fetchUserCompletedList(): Promise<any> {
 }
 
 function filterUserCompletedList(fullUserCompletedList: any[]): any[] {
-  /**Filters complete list of completed Katas against the existing completed Kata DB
+  /**
+   * Filters complete list of completed Katas against the existing completed Kata DB
    * Filtered list provides detail of any Kata that is required to be added or
    * any Kata that requires updating due to a new language completion.
    * The completed Kata list also contains completion information, specifically
