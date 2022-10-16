@@ -5,6 +5,7 @@ import Axios from "axios"
 import * as config from "../../config/config"
 import { userCompletedDB } from "../../config/userCompletedDB"
 import puppeteer from "puppeteer"
+import readline from "readline"
 
 //+ ====================================================================================================================
 //+ Main Default Function for collecting & processing user solutions
@@ -124,13 +125,13 @@ async function getUserSolutionsAllPages() {
     const page = await browser.newPage()
     await page.setExtraHTTPHeaders({ cookie: config.sessionID })
     await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
-    const delay = 1000
+    const delay = 1500
     const totalKatas = userCompletedDB.length
     let pageCount = 0
     let loadedCount = 0
     do {
       loadedCount = await getCount(page)
-      console.log(
+      await showProgress(
         `${loadedCount} Katas from ${++pageCount} pages.  ${Math.round(
           (loadedCount / totalKatas) * 100
         )}% complete...`
@@ -160,6 +161,12 @@ async function getCount(page: puppeteer.Page): Promise<number> {
    * @returns Promise<number> Length of the array of selector param of page.$$eval
    */
   return await page.$$eval(".list-item-solutions", (arr) => arr.length)
+}
+
+async function showProgress(message: string): Promise<void> {
+  readline.cursorTo(process.stdout, 0)
+  process.stdout.write(message)
+  await new Promise((res) => setTimeout(res, 500))
 }
 
 async function scrollDown(page: puppeteer.Page) {
