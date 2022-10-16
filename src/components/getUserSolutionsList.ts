@@ -25,6 +25,7 @@ export default async function getUserSolutionsList(): Promise<
     language: string | undefined
     code: string | undefined
   }[] = []
+  let multipleSolutionsCount = 0
 
   try {
     const $ = cheerio.load(data)
@@ -57,7 +58,7 @@ export default async function getUserSolutionsList(): Promise<
             code: code
           })
         } else {
-          console.log(`NOTE: More than one user solution found for ${id} in ${language}`)
+          multipleSolutionsCount += 1
           const index = userSolutionsList.findIndex(
             (existSolutions) => existSolutions.id === id && existSolutions.language === language
           )
@@ -76,7 +77,7 @@ export default async function getUserSolutionsList(): Promise<
   console.log(
     `Parsed and processed ${userSolutionsList.length} user solution code file${
       userSolutionsList.length > 1 ? "s" : ""
-    }.`
+    }.\n${multipleSolutionsCount} Katas have multiple solutions in a given language.`
   )
   return userSolutionsList
 }
