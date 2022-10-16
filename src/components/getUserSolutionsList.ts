@@ -3,85 +3,11 @@ import cheerio from "cheerio"
 import { format } from "prettier"
 import Axios from "axios"
 import * as config from "../../config/config"
-import path from "node:path"
 import puppeteer from "puppeteer"
 
-async function fetchUserSolutionsList(): Promise<any> {
-  /**
-   * Fetch completed solutions from codewars.com/users/profile/completed_solutions
-   * from within the user profile section on codewars.com
-   **/
-  try {
-    const response = await Axios.get(
-      `https://www.codewars.com/users/${config.userID}/completed_solutions`,
-      {
-        headers: { Cookie: config.sessionID }
-      }
-    )
-    return response.data
-  } catch (error) {
-    console.error(`Error from fetchUserSolutionsList() in ${path.basename(__filename)}`)
-    throw Error(`Error accessing ${config.userID} solutions with Axios\n${error}`)
-  }
-}
-
-async function fetchEntireUserSolutionsList() {
-  /**
-   * Fetch entire completed solutions list from codewars.com/users/profile/completed_solutions
-   * from within the user profile section on codewars.com using puppeteer module.
-   **/
-  try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      defaultViewport: null,
-      args: ["--window-size=1200,800"]
-    })
-    const page = await browser.newPage()
-    await page.setExtraHTTPHeaders({ cookie: config.sessionID })
-    await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
-    const delay = 3000
-    let preCount = 0
-    let postCount = 0
-    do {
-      preCount = await getCount(page)
-      await scrollDown(page)
-      await new Promise((res) => setTimeout(res, delay))
-      postCount = await getCount(page)
-    } while (postCount > preCount)
-    await new Promise((res) => setTimeout(res, delay))
-    const pageData = await page.evaluate(() => {
-      return { html: document.documentElement.innerHTML }
-    })
-    await browser.close()
-    return await pageData.html
-
-    // Error Handling
-  } catch (error) {
-    console.error(`Error from fetchEntireUserSolutionsList() in ${path.basename(__filename)}`)
-    throw Error(`Error accessing ${config.userID} solutions with Puppeteer\n${error}`)
-  }
-}
-
-async function getCount(page: puppeteer.Page): Promise<number> {
-  /**
-   * Helper function for getEntireUserSolutionsList().  Returns array length for
-   * comparison against previous to evaluate end of infinite scroll
-   * @param page {puppeteer.Page} Current evaluated page from puppeteer
-   * @returns Promise<number> Length of the array of selector param of page.$$eval
-   */
-  return await page.$$eval(".list-item-solutions", (arr) => arr.length)
-}
-
-async function scrollDown(page: puppeteer.Page) {
-  /**
-   * Helper function for getEntireUserSolutionsList().  Runs the page scroll to bring
-   * selector param into view and trigger infinite scroll next page.
-   * @param page {puppeteer.Page} Current evaluated page from puppeteer
-   */
-  await page.$eval(".items-list:last-child", (selector) => {
-    selector.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" })
-  })
-}
+//+ ====================================================================================================================
+//+ Main Default Function for collecting & processing user solutions
+//+ ====================================================================================================================
 
 export default async function getUserSolutionsList(): Promise<
   { id: string | undefined; language: string | undefined; code: string | undefined }[]
@@ -92,8 +18,8 @@ export default async function getUserSolutionsList(): Promise<
    * then push to a solutions array to be accessed in the file write process.
    **/
   const data: string = config.entireSolutionsList
-    ? await fetchEntireUserSolutionsList()
-    : await fetchUserSolutionsList()
+    ? await getUserSolutionsAllPages()
+    : await getUserSolutionsFirstPage()
   const userSolutionsList: {
     id: string | undefined
     language: string | undefined
@@ -144,8 +70,8 @@ export default async function getUserSolutionsList(): Promise<
       })
     })
   } catch (error) {
-    console.error(`Error from getUserSolutionsList() in ${path.basename(__filename)}`)
-    throw new Error(`Error formatting user solutions\n${error}`)
+    console.error(`Error from getUserSolutionsList()`)
+    throw error
   }
   console.log(
     `Parsed and processed ${userSolutionsList.length} user solution code file${
@@ -153,4 +79,89 @@ export default async function getUserSolutionsList(): Promise<
     }.`
   )
   return userSolutionsList
+}
+
+//+ ====================================================================================================================
+//+ AXIOS Solution Section for getting first page ONLY of user solutions
+//+ ====================================================================================================================
+
+async function getUserSolutionsFirstPage(): Promise<any> {
+  /**
+   * Fetch completed solutions from codewars.com/users/profile/completed_solutions
+   * from within the user profile section on codewars.com
+   **/
+  try {
+    const response = await Axios.get(
+      `https://www.codewars.com/users/${config.userID}/completed_solutions`,
+      {
+        headers: { Cookie: config.sessionID }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error(`Error from getUserSolutionsFirstPage() for ${config.userID} AXIOS solutions`)
+    throw error
+  }
+}
+
+//+ ====================================================================================================================
+//+ PUPPETEER Solution Section for collecting ALL user solutions
+//+ ====================================================================================================================
+
+async function getUserSolutionsAllPages() {
+  /**
+   * Fetch entire completed solutions list from codewars.com/users/profile/completed_solutions
+   * from within the user profile section on codewars.com using puppeteer module.
+   **/
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      defaultViewport: null,
+      args: ["--window-size=1200,800"]
+    })
+    const page = await browser.newPage()
+    await page.setExtraHTTPHeaders({ cookie: config.sessionID })
+    await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
+    const delay = 3000
+    let preCount = 0
+    let postCount = 0
+    do {
+      preCount = await getCount(page)
+      await scrollDown(page)
+      await new Promise((res) => setTimeout(res, delay))
+      postCount = await getCount(page)
+    } while (postCount > preCount)
+    await new Promise((res) => setTimeout(res, delay))
+    const pageData = await page.evaluate(() => {
+      return { html: document.documentElement.innerHTML }
+    })
+    await browser.close()
+    return await pageData.html
+
+    // Error Handling
+  } catch (error) {
+    console.error(`Error from getUserSolutionsAllPages() for ${config.userID} PUPPETEER solutions`)
+    throw error
+  }
+}
+
+async function getCount(page: puppeteer.Page): Promise<number> {
+  /**
+   * Helper function for getEntireUserSolutionsList().  Returns array length for
+   * comparison against previous to evaluate end of infinite scroll
+   * @param page {puppeteer.Page} Current evaluated page from puppeteer
+   * @returns Promise<number> Length of the array of selector param of page.$$eval
+   */
+  return await page.$$eval(".list-item-solutions", (arr) => arr.length)
+}
+
+async function scrollDown(page: puppeteer.Page) {
+  /**
+   * Helper function for getEntireUserSolutionsList().  Runs the page scroll to bring
+   * selector param into view and trigger infinite scroll next page.
+   * @param page {puppeteer.Page} Current evaluated page from puppeteer
+   */
+  await page.$eval(".items-list:last-child", (selector) => {
+    selector.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" })
+  })
 }

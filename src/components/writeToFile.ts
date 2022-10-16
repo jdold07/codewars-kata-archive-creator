@@ -20,8 +20,8 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
     { flag: "w", encoding: "utf8", mode: 644 },
     (error) => {
       if (error) {
-        console.error(`Error from updateUserCompleteDB in ${path.basename(__filename)}`)
-        throw Error(`Error writing ${userCompletedDBPath}\n${error}`)
+        console.error(`Error from updateUserCompleteDB(...) for ${userCompletedDBPath}`)
+        throw error
       }
       console.log(`Updating of ${userCompletedDBPath} was successful`)
     }
@@ -36,8 +36,8 @@ export function createKataRootDir(kataDetails: any): void {
   try {
     fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 755 })
   } catch (error) {
-    console.error(`Error from createKataRootDir() in ${path.basename(__filename)}`)
-    throw Error(`Error creating ${kataDetails.kataPath}\n${error}`)
+    console.error(`Error from createKataRootDir(...) for ${kataDetails.kataPath}`)
+    throw error
   }
   console.log(`${kataDetails.kataPath} is ready`)
   return
@@ -48,8 +48,8 @@ export function createLangDir(kataDetails: any, langPath: string): void {
   try {
     fs.mkdirSync(langPath, { recursive: true, mode: 755 })
   } catch (error) {
-    console.error(`Error from createLangDir() in ${path.basename(__filename)}`)
-    throw Error(`Error creating ${kataDetails.slug}/${kataDetails.curLang}\n${error}`)
+    console.error(`Error from createLangDir(...) for ${kataDetails.slug}/${kataDetails.curLang}`)
+    throw error
   }
   console.log(`${kataDetails.slug}/${kataDetails.curLang} is ready`)
   return
@@ -59,17 +59,27 @@ export function writeKataMarkdownFile(kataDetails: any, mdString: string): void 
   /** Call to generate Kata markdown description layout & write file to disk
    * !Currently set to OVERWRITE existing markdown description
    **/
-  fs.writeFile(path.join(kataDetails.kataPath, `${kataDetails.slug}.md`), mdString, { flag: "w", mode: 644 }, (error) => {
-    if (error) {
-      console.error(`Error from writeKataMarkdownFile(...) in ${path.basename(__filename)}`)
-      throw Error(`Error writing ${kataDetails.slug}.md\n${error}`)
+  fs.writeFile(
+    path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
+    mdString,
+    { flag: "w", mode: 644 },
+    (error) => {
+      if (error) {
+        console.error(`Error from writeKataMarkdownFile(...) for ${kataDetails.slug}.md`)
+        throw error
+      }
     }
-  })
+  )
   console.log(`Writing of markdown description file for ${kataDetails.slug} successful.`)
   return
 }
 
-export function writeUserSolutionFile(kataData: any, langPath: string, langFilename: string, langExt: string): void {
+export function writeUserSolutionFile(
+  kataData: any,
+  langPath: string,
+  langFilename: string,
+  langExt: string
+): void {
   /** Write user solution code block/s to file
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, new solutions for an existing language will be lost
@@ -81,20 +91,28 @@ export function writeUserSolutionFile(kataData: any, langPath: string, langFilen
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.log(`${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`)
+          console.log(
+            `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
+          )
           return
         }
-        console.warn(`WARNING from writeUserSolutionFile(...) in ${path.basename(__filename)}`)
-        console.warn(`While writing ${langFilename}.${langExt} CODE file\n${error}`)
-      } else {
-        console.log(`Writing of ${langFilename}.${langExt} CODE file was successful.`)
+        console.error(
+          `Error from writeUserSolutionFile(...) for ${langFilename}.${langExt} CODE file`
+        )
+        throw error
       }
     }
   )
+  console.log(`Writing of ${langFilename}.${langExt} CODE file was successful.`)
   return
 }
 
-export function writeTestFile(kataData: any, langPath: string, langFilename: string, langExt: string): void {
+export function writeTestFile(
+  kataData: any,
+  langPath: string,
+  langFilename: string,
+  langExt: string
+): void {
   /** Write test code block/s to file
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, no updates or changes to tests for an existing language will occur
@@ -102,22 +120,25 @@ export function writeTestFile(kataData: any, langPath: string, langFilename: str
   fs.writeFile(
     path.join(
       langPath,
-      kataData.curLang === "python" ? `${langFilename}_test.${langExt}` : `${langFilename}.Test.${langExt}`
+      kataData.curLang === "python"
+        ? `${langFilename}_test.${langExt}`
+        : `${langFilename}.Test.${langExt}`
     ),
     kataData.tests,
     { flag: "wx", encoding: "utf8", mode: 644 },
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.log(`${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`)
+          console.log(
+            `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
+          )
           return
         }
-        console.warn(`WARNING from writeTestFile(...) in ${path.basename(__filename)}`)
-        console.warn(`While writing ${langFilename}.${langExt} TEST file\n${error}`)
-      } else {
-        console.log(`Writing of ${langFilename}.${langExt} TEST file was successful.`)
+        console.warn(`Error from writeTestFile(...) for ${langFilename}.${langExt} TEST file`)
+        throw error
       }
     }
   )
+  console.log(`Writing of ${langFilename}.${langExt} TEST file was successful.`)
   return
 }

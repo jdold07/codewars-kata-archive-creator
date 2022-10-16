@@ -38,8 +38,7 @@ export default async () => {
       }
     } catch (error) {
       if (error) {
-        console.error(`Error executing kata2markdown App ... review config and try again`)
-        throw Error(`An error occurred while executing kata2markdown App\n${error}`)
+        throw error
       }
     }
     return true

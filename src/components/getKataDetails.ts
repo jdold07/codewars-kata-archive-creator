@@ -22,9 +22,12 @@ export default async function getKataDetails(kata: any): Promise<any> {
     const kataRankDirName = `kata-${Math.abs(response.data.rank.id) || "beta"}-kyu`
     const kataPath: string = path.join(rootPath, kataRankDirName, response.data.slug)
 
-    return await Object.assign({}, kata, response.data, { kataRankDirName: kataRankDirName, kataPath: kataPath })
+    return await Object.assign({}, kata, response.data, {
+      kataRankDirName: kataRankDirName,
+      kataPath: kataPath
+    })
   } catch (error) {
-    console.error(`Error from getKataDetails() in ${path.basename(__filename)}`)
-    throw Error(`Error collating kata detail for ${kata.slug}\n${error}`)
+    console.error(`Error from getKataDetails() for ${kata.slug}`)
+    throw error
   }
 }

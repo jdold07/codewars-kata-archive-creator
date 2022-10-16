@@ -3,7 +3,6 @@ import { userCompletedDB } from "../../config/userCompletedDB"
 import { userID } from "../../config/config"
 import { updateUserCompletedDB } from "./writeToFile"
 import axios from "axios"
-import path from "node:path"
 
 export default async function getUserCompletedList(): Promise<any> {
   /**
@@ -38,14 +37,16 @@ async function fetchUserCompletedList(): Promise<any> {
     const fullUserCompletedList: any[] = []
 
     do {
-      response = await axios.get(`http://www.codewars.com/api/v1/users/${userID}/code-challenges/completed?page=${page}`)
+      response = await axios.get(
+        `http://www.codewars.com/api/v1/users/${userID}/code-challenges/completed?page=${page}`
+      )
       fullUserCompletedList.push(...response.data.data)
       page += 1
     } while (page < response?.data?.totalPages || 0)
     return fullUserCompletedList
   } catch (error) {
-    console.error(`Error from fetchUserCompletedList() in ${path.basename(__filename)}`)
-    throw Error(`Error fetching Completed Kata list\n${error}`)
+    console.error(`Error from fetchUserCompletedList()`)
+    throw error
   }
 }
 
@@ -92,7 +93,7 @@ function filterUserCompletedList(fullUserCompletedList: any[]): any[] {
     }
     return filteredUserCompletedList
   } catch (error) {
-    console.error(`Error from filterUserCompletedList() in ${path.basename(__filename)}`)
-    throw Error(`There was a problem filtering Completed Kata list\n${error}`)
+    console.error(`Error from filterUserCompletedList(...)`)
+    throw error
   }
 }
