@@ -59,6 +59,7 @@ export async function writeKataMarkdownFile(kataDetails: any, mdString: string):
   /** Call to generate Kata markdown description layout & write file to disk
    * !Currently set to OVERWRITE existing markdown description
    **/
+  let logMessage
   await fs.writeFile(
     path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
     mdString,
@@ -66,15 +67,17 @@ export async function writeKataMarkdownFile(kataDetails: any, mdString: string):
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.log(`${kataDetails.slug}.md file already exists and was NOT overwritten.`)
+          logMessage = `${kataDetails.slug}.md file already exists and was NOT overwritten.`
           return
         }
         console.error(`Error from writeKataMarkdownFile(...) for ${kataDetails.slug}.md`)
         throw error
       }
+      logMessage = `Writing of markdown description file for ${kataDetails.slug} successful.`
+      return
     }
   )
-  console.log(`Writing of markdown description file for ${kataDetails.slug} successful.`)
+  console.log(logMessage)
   return
 }
 
@@ -88,6 +91,7 @@ export async function writeUserSolutionFile(
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, new solutions for an existing language will be lost
    **/
+  let logMessage
   await fs.writeFile(
     path.join(langPath, `${langFilename}.${langExt}`),
     kataData.code,
@@ -95,9 +99,7 @@ export async function writeUserSolutionFile(
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.log(
-            `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
-          )
+          logMessage = `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
           return
         }
         console.error(
@@ -105,9 +107,11 @@ export async function writeUserSolutionFile(
         )
         throw error
       }
+      logMessage = `Writing of ${langFilename}.${langExt} CODE file was successful.`
+      return
     }
   )
-  console.log(`Writing of ${langFilename}.${langExt} CODE file was successful.`)
+  console.log(logMessage)
   return
 }
 
@@ -121,6 +125,7 @@ export async function writeTestFile(
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, no updates or changes to tests for an existing language will occur
    **/
+  let logMessage
   await fs.writeFile(
     path.join(
       langPath,
@@ -133,16 +138,16 @@ export async function writeTestFile(
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          console.log(
-            `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
-          )
+          logMessage = `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
           return
         }
         console.warn(`Error from writeTestFile(...) for ${langFilename}.${langExt} TEST file`)
         throw error
       }
+      logMessage = `Writing of ${langFilename}.${langExt} TEST file was successful.`
+      return
     }
   )
-  console.log(`Writing of ${langFilename}.${langExt} TEST file was successful.`)
+  console.log(logMessage)
   return
 }
