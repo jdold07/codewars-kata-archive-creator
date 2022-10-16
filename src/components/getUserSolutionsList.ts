@@ -3,6 +3,7 @@ import cheerio from "cheerio"
 import { format } from "prettier"
 import Axios from "axios"
 import * as config from "../../config/config"
+import { userCompletedDB } from "../../config/userCompletedDB"
 import puppeteer from "puppeteer"
 
 //+ ====================================================================================================================
@@ -124,24 +125,25 @@ async function getUserSolutionsAllPages() {
     await page.setExtraHTTPHeaders({ cookie: config.sessionID })
     await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
     const delay = 1000
+    const totalKatas = userCompletedDB.length
     let pageCount = 0
-    let preCount = 0
-    let postCount = 0
+    let loadedCount = 0
     do {
-      preCount = await getCount(page)
-      process.stdout.clearLine(0)
-      // process.stdout.cursorTo(0)
-      process.stdout.write(`${preCount} solutions from ${++pageCount} pages so far...`)
+      loadedCount = await getCount(page)
+      console.log(
+        `${loadedCount} Katas from ${++pageCount} pages.  ${Math.round(
+          (loadedCount / totalKatas) * 100
+        )}% complete...`
+      )
       await scrollDown(page)
       await new Promise((res) => setTimeout(res, delay))
-      postCount = await getCount(page)
-    } while (postCount > preCount)
-    // await new Promise((res) => setTimeout(res, delay))
-    const pageData = await page.evaluate(() => {
+    } while (totalKatas > loadedCount)
+    await new Promise((res) => setTimeout(res, delay))
+    const userSolutionsList = await page.evaluate(() => {
       return { html: document.documentElement.innerHTML }
     })
     await browser.close()
-    return await pageData.html
+    return await userSolutionsList.html
 
     // Error Handling
   } catch (error) {
