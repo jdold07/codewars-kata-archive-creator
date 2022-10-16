@@ -29,12 +29,12 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
   return
 }
 
-export function createKataRootDir(kataDetails: any): void {
+export async function createKataRootDir(kataDetails: any): Promise<void> {
   /** Create individual Kata root directory that will hold each completed
    * language specific directory related to the Kata
    **/
   try {
-    fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 755 })
+    await fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 755 })
   } catch (error) {
     console.error(`Error from createKataRootDir(...) for ${kataDetails.kataPath}`)
     throw error
@@ -43,10 +43,10 @@ export function createKataRootDir(kataDetails: any): void {
   return
 }
 
-export function createLangDir(kataDetails: any, langPath: string): void {
+export async function createLangDir(kataDetails: any, langPath: string): Promise<void> {
   // Create individual Kata language path
   try {
-    fs.mkdirSync(langPath, { recursive: true, mode: 755 })
+    await fs.mkdirSync(langPath, { recursive: true, mode: 755 })
   } catch (error) {
     console.error(`Error from createLangDir(...) for ${kataDetails.slug}/${kataDetails.curLang}`)
     throw error
@@ -55,16 +55,20 @@ export function createLangDir(kataDetails: any, langPath: string): void {
   return
 }
 
-export function writeKataMarkdownFile(kataDetails: any, mdString: string): void {
+export async function writeKataMarkdownFile(kataDetails: any, mdString: string): Promise<void> {
   /** Call to generate Kata markdown description layout & write file to disk
    * !Currently set to OVERWRITE existing markdown description
    **/
-  fs.writeFile(
+  await fs.writeFile(
     path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
     mdString,
     { flag: "w", mode: 644 },
     (error) => {
       if (error) {
+        if (error.code === "EEXIST") {
+          console.log(`${kataDetails.slug}.md file already exists and was NOT overwritten.`)
+          return
+        }
         console.error(`Error from writeKataMarkdownFile(...) for ${kataDetails.slug}.md`)
         throw error
       }
@@ -74,17 +78,17 @@ export function writeKataMarkdownFile(kataDetails: any, mdString: string): void 
   return
 }
 
-export function writeUserSolutionFile(
+export async function writeUserSolutionFile(
   kataData: any,
   langPath: string,
   langFilename: string,
   langExt: string
-): void {
+): Promise<void> {
   /** Write user solution code block/s to file
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, new solutions for an existing language will be lost
    **/
-  fs.writeFile(
+  await fs.writeFile(
     path.join(langPath, `${langFilename}.${langExt}`),
     kataData.code,
     { flag: "wx", encoding: "utf8", mode: 644 },
@@ -107,17 +111,17 @@ export function writeUserSolutionFile(
   return
 }
 
-export function writeTestFile(
+export async function writeTestFile(
   kataData: any,
   langPath: string,
   langFilename: string,
   langExt: string
-): void {
+): Promise<void> {
   /** Write test code block/s to file
    * ?Currently set so it will NOT overwrite an existing file
    * ?With this setting, no updates or changes to tests for an existing language will occur
    **/
-  fs.writeFile(
+  await fs.writeFile(
     path.join(
       langPath,
       kataData.curLang === "python"
