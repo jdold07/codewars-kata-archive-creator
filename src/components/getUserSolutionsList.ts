@@ -77,7 +77,7 @@ export default async function getUserSolutionsList(): Promise<
     throw error
   }
   console.log(
-    `Parsed and processed ${userSolutionsList.length} user solution code file${
+    `Parsed and processed ${userSolutionsList.length} user solution${
       userSolutionsList.length > 1 ? "s" : ""
     }.\n${multipleSolutionsCount} Katas have multiple solutions in a given language.`
   )
@@ -129,6 +129,11 @@ async function getUserSolutionsAllPages() {
     const totalKatas = userCompletedDB.length
     let pageCount = 0
     let loadedCount = 0
+    process.stdout.write(
+      `${loadedCount} Katas from ${++pageCount} pages.  ${Math.round(
+        (loadedCount / totalKatas) * 100
+      )}% complete...`
+    )
     do {
       loadedCount = await getCount(page)
       await showProgress(
