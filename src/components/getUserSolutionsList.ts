@@ -124,6 +124,7 @@ async function getUserSolutionsAllPages() {
     await page.setExtraHTTPHeaders({ cookie: config.sessionID })
     await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
     const delay = 1000
+    let pageCount = 0
     let preCount = 0
     let postCount = 0
     do {
@@ -131,8 +132,11 @@ async function getUserSolutionsAllPages() {
       await scrollDown(page)
       await new Promise((res) => setTimeout(res, delay))
       postCount = await getCount(page)
+      process.stdout.clearLine(0)
+      // process.stdout.cursorTo(0)
+      process.stdout.write(`${preCount} solutions from ${++pageCount} pages so far...`)
     } while (postCount > preCount)
-    await new Promise((res) => setTimeout(res, delay))
+    // await new Promise((res) => setTimeout(res, delay))
     const pageData = await page.evaluate(() => {
       return { html: document.documentElement.innerHTML }
     })
