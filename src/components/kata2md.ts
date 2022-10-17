@@ -23,17 +23,17 @@ export default async () => {
         const kataDetailWithRankPath = await getKataDetails(kata)
         //TODO Make the kata root directory creation & markdown write only run once per Kata ID.
         //TODO At the moment this runs unnecessarily for every language a Kata has been completed in.
-        Writes.createKataRootDir(kataDetailWithRankPath)
+        await Writes.createKataRootDir(kataDetailWithRankPath)
         const mdString = parseForMD(kataDetailWithRankPath)
-        Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
+        await Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
         for await (const language of kataDetailWithRankPath.completedLanguages) {
           const combinedKataData = await combineData(
             kataDetailWithRankPath,
             userSolutionsList,
             language
           )
-          const kataDataProcessedCode = processCodeStrings(combinedKataData)
-          runCodeWrites(kataDataProcessedCode)
+          const kataDataProcessedCode = await processCodeStrings(combinedKataData)
+          await runCodeWrites(kataDataProcessedCode)
         }
       }
     } catch (error) {
