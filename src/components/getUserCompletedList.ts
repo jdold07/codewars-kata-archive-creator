@@ -4,33 +4,34 @@ import { userID } from "../../config/config"
 import { updateUserCompletedDB } from "./writeToFile"
 import axios from "axios"
 
+/**
+ * Entry point for fetching new/current Completed Kata List from API
+ * @Step_1 - Fetch current complete list of Completed Kata List from API
+ * @Step_2 - Filter the collected list against existing completed Kata DB
+ * @Step_3 - Write updates to existing completed Kata DB
+ * @returns {filteredCompletedKataList:
+ *    data: {
+ *      id: string
+ *      name: string
+ *      slug: string
+ *      completedLanguages: string[]
+ *      completedAt: string
+ *    }[]}
+ */
 export default async function getUserCompletedList(): Promise<any> {
-  /**
-   * Entry point for fetching new/current Completed Kata List from API
-   * Step 1 - Fetch current complete list of Completed Kata List from API
-   * Step 2 - Filter the collected list against existing completed Kata DB
-   * Step 3 - Write updates to existing completed Kata DB
-   * @Return const filteredCompletedKataList:
-   *    data: {
-   *      id: string
-   *      name: string
-   *      slug: string
-   *      completedLanguages: string[]
-   *      completedAt: string
-   *    }[]
-   */
   const fullUserCompletedList = await fetchUserCompletedList()
   const filteredCompletedKataList = filterUserCompletedList(fullUserCompletedList)
   await updateUserCompletedDB(fullUserCompletedList)
   return filteredCompletedKataList
 }
 
+/**
+ * Fetch latest complete list of completed Katas
+ * Used to assert which Katas need downloading of Kata Detail from API &
+ * for completion date & completed languages info
+ * @returns {fullUserCompletedList: Promise<any>}
+ */
 async function fetchUserCompletedList(): Promise<any> {
-  /**
-   * Fetch latest current list of completed Katas
-   * Used to assert which Katas need downloading of Kata Detail from API &
-   * for completion date & completed languages info
-   **/
   try {
     let page = 0
     let response
@@ -50,33 +51,30 @@ async function fetchUserCompletedList(): Promise<any> {
   }
 }
 
+/**
+ * Filters complete list of completed Katas against the existing completed Kata DB
+ * Filtered list provides detail of any Kata that is required to be added or
+ * any Kata that requires updating due to a new language completion.
+ * The completed Kata list also contains completion information, specifically
+ * the completion date and what languages the Kata has been completed in.
+ * @param {fullCompletedKataList:
+ *    data: {
+ *      id: string
+ *      name: string
+ *      slug: string
+ *      completedLanguages: string[]
+ *      completedAt: string
+ *    }[]}
+ * @returns {filteredCompleteKataList:
+ *    data: {
+ *      id: string
+ *      name: string
+ *      slug: string
+ *      completedLanguages: string[]
+ *      completedAt: string
+ *    }[]}
+ **/
 function filterUserCompletedList(fullUserCompletedList: any[]): any[] {
-  /**
-   * Filters complete list of completed Katas against the existing completed Kata DB
-   * Filtered list provides detail of any Kata that is required to be added or
-   * any Kata that requires updating due to a new language completion.
-   * The completed Kata list also contains completion information, specifically
-   * the completion date and what languages the Kata has been completed in.
-   * @Param const fullCompletedKataList: {
-   *   totalPages: number
-   *   totalItems: number
-   *   data: {
-   *           id: string
-   *           name: string
-   *           slug: string
-   *           completedLanguages: string[]
-   *           completedAt: string
-   *         }[]
-   *   }
-   * @Return filteredCompleteKataList:
-   *   data: {
-   *      id: string
-   *      name: string
-   *      slug: string
-   *      completedLanguages: string[]
-   *      completedAt: string
-   *    }[]
-   **/
   try {
     const filteredUserCompletedList = fullUserCompletedList.filter(
       (fullListKata: any) =>

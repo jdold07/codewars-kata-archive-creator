@@ -11,14 +11,15 @@ import readline from "readline"
 //+ Main Default Function for collecting & processing user solutions
 //+ ====================================================================================================================
 
+/**
+ * Extract language specific solutions code from user profile section,
+ * format the web-scrapped code blocks (currently only for JS & TS with Prettier),
+ * then push to a solutions array to be accessed in the file write process.
+ * @returns {userSolutionsList: Promise<any>} - Processed userSolutionsList
+ */
 export default async function getUserSolutionsList(): Promise<
   { id: string | undefined; language: string | undefined; code: string | undefined }[]
 > {
-  /**
-   * Extract language specific solutions code from user profile section,
-   * format the web-scrapped code blocks (currently only for JS & TS with Prettier),
-   * then push to a solutions array to be accessed in the file write process.
-   **/
   const data: string = config.entireSolutionsList
     ? await getUserSolutionsAllPages()
     : await getUserSolutionsFirstPage()
@@ -88,11 +89,12 @@ export default async function getUserSolutionsList(): Promise<
 //+ AXIOS Solution Section for getting first page ONLY of user solutions
 //+ ====================================================================================================================
 
+/**
+ * Fetch completed solutions from codewars.com/users/profile/completed_solutions
+ * from within the user profile section on codewars.com
+ * @returns {response.data: Promise<any>} - html of user solutions scrapped from user profile
+ */
 async function getUserSolutionsFirstPage(): Promise<any> {
-  /**
-   * Fetch completed solutions from codewars.com/users/profile/completed_solutions
-   * from within the user profile section on codewars.com
-   **/
   try {
     const response = await Axios.get(
       `https://www.codewars.com/users/${config.userID}/completed_solutions`,
@@ -111,11 +113,12 @@ async function getUserSolutionsFirstPage(): Promise<any> {
 //+ PUPPETEER Solution Section for collecting ALL user solutions
 //+ ====================================================================================================================
 
+/**
+ * Fetch entire completed solutions list from codewars.com/users/profile/completed_solutions
+ * from within the user profile section on codewars.com using puppeteer module.
+ * @returns {userSolutionsList.html: Promise<any>} - html of user solutions scrapped from user profile
+ */
 async function getUserSolutionsAllPages() {
-  /**
-   * Fetch entire completed solutions list from codewars.com/users/profile/completed_solutions
-   * from within the user profile section on codewars.com using puppeteer module.
-   **/
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -145,42 +148,40 @@ async function getUserSolutionsAllPages() {
     })
     await browser.close()
     return await userSolutionsList.html
-
-    // Error Handling
   } catch (error) {
     console.error(`Error from getUserSolutionsAllPages() for ${config.userID} PUPPETEER solutions`)
     throw error
   }
 }
 
+/**
+ * Helper function for getEntireUserSolutionsList().  Returns array length for
+ * comparison against previous to evaluate end of infinite scroll
+ * @param {page: puppeteer.Page} - Current evaluated page from puppeteer
+ * @returns {Promise<number>} - Length of the array of selector param of page.$$eval
+ */
 async function getCount(page: puppeteer.Page): Promise<number> {
-  /**
-   * Helper function for getEntireUserSolutionsList().  Returns array length for
-   * comparison against previous to evaluate end of infinite scroll
-   * @param page {puppeteer.Page} Current evaluated page from puppeteer
-   * @returns Promise<number> Length of the array of selector param of page.$$eval
-   */
   return await page.$$eval(".list-item-solutions", (arr) => arr.length)
 }
 
+/**
+ * Helper function for getEntireUserSolutionList() relating to progress logging.
+ * Function is to clear line on stdout and write updated progress message.
+ * @param {message: string} - The updated message to log out
+ * @returns {void}
+ */
 function showProgress(message: string): void {
-  /**
-   * Helper function for getEntireUserSolutionList() relating to progress logging.
-   * Function is to clear line on stdout and write updated progress message.
-   * @param message {string} The updated message to log out
-   * @return void
-   */
   process.stdout.write(message)
   readline.cursorTo(process.stdout, 0)
   return
 }
 
+/**
+ * Helper function for getEntireUserSolutionsList().  Runs the page scroll to bring
+ * selector param into view and trigger infinite scroll next page.
+ * @param {page: puppeteer.Page} - Current evaluated page from puppeteer
+ */
 async function scrollDown(page: puppeteer.Page) {
-  /**
-   * Helper function for getEntireUserSolutionsList().  Runs the page scroll to bring
-   * selector param into view and trigger infinite scroll next page.
-   * @param page {puppeteer.Page} Current evaluated page from puppeteer
-   */
   await page.$eval(".items-list:last-child", (selector) => {
     selector.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" })
   })

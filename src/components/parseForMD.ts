@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import json2md from "json2md"
 
+/** json2md mapping / layout to generate markdown file content
+ * @param kataDetails - Data object containing Kata detail required for description
+ * @returns {json2md: string} - Data object parsed into markdown layout as a string
+ **/
 export default function parseForMD(kataDetails: any): string {
-  /** json2md mapping / layout to generate markdown file content
-   * @Param kataDetails
-   * @Return json2md:string (filteredKataDetails parsed into markdown layout as a string)
-   **/
   try {
     const date = new Date().toISOString().split("T")[0]
 
-    console.log(`Parsing markdown format for ${kataDetails.slug}`)
+    // console.log(`Parsing markdown format for ${kataDetails.slug}`)
 
     return json2md([
       { h1: `${kataDetails?.rank?.name || "BETA"} - ${kataDetails?.name}` },

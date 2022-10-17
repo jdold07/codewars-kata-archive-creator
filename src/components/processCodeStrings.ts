@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { changeCase } from "./helpers"
 
+/**
+ * Format strings for writing code &/or test files
+ * @param {kataData: any}
+ * @returns {kataData: any} - With formatted code & test block strings for writing
+ */
 export default function processCodeStrings(kataData: any): any {
-  // Format string for writing code file || test file
   const langFilename =
     kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
 
@@ -25,8 +29,13 @@ export default function processCodeStrings(kataData: any): any {
   }
 }
 
+/**
+ * ?TypeScript specific formatting
+ * @param kataData
+ * @param langFilename
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 function typescriptFormatting(kataData: any, langFilename: string): any {
-  // ?TypeScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
   slashCommentPreprocess(kataData)
@@ -63,8 +72,13 @@ function typescriptFormatting(kataData: any, langFilename: string): any {
   return slashCommentReturn(kataData)
 }
 
+/**
+ * ?JavaScript specific formatting
+ * @param kataData
+ * @param langFilename
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 function javascriptFormatting(kataData: any, langFilename: string): any {
-  //? JavaScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
   slashCommentPreprocess(kataData)
@@ -113,9 +127,14 @@ function javascriptFormatting(kataData: any, langFilename: string): any {
   return slashCommentReturn(kataData)
 }
 
+/**
+ * ?Swift specific formatting
+ * @param kataData
+ * @param langFilename
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function swiftFormatting(kataData: any, langFilename: string): any {
-  //? Swift specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
   slashCommentPreprocess(kataData)
 
@@ -123,8 +142,13 @@ function swiftFormatting(kataData: any, langFilename: string): any {
   return slashCommentReturn(kataData)
 }
 
+/**
+ * ?Python specific formatting
+ * @param kataData
+ * @param langFilename
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 function pythonFormatting(kataData: any, langFilename: string): any {
-  //? Python specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
   hashCommentPreprocess(kataData)
@@ -142,8 +166,13 @@ function pythonFormatting(kataData: any, langFilename: string): any {
   return hashCommentReturn(kataData)
 }
 
+/**
+ * ?CoffeeScript specific formatting
+ * @param kataData
+ * @param langFilename
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 function coffeescriptFormatting(kataData: any, langFilename: string): any {
-  //? CoffeeScript specific formatting
   // CODE STRING - Reformat export, imports & test config for local use
 
   kataData = hashCommentPreprocess(kataData)
@@ -166,8 +195,13 @@ function coffeescriptFormatting(kataData: any, langFilename: string): any {
 
   return hashCommentReturn(kataData)
 }
+
+/**
+ * ? COMMON to all DOUBLE FORWARD SLASH COMMENT languages
+ * @param kataData
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 function slashCommentPreprocess(kataData: any): any {
-  //? COMMON to all DOUBLE FORWARD SLASH COMMENT languages
   // TEST STRING - Reformat export, imports & test config for local use
   // Remove initial any default comment block
   kataData.tests = kataData?.tests.replace(
@@ -182,8 +216,13 @@ function slashCommentPreprocess(kataData: any): any {
   return kataData
 }
 
+/**
+ * ? COMMON to all DOUBLE FORWARD SLASH COMMENT languages
+ * Return formatted header on code & test strings for DOUBLE FORWARD SLASH COMMENT languages
+ * @param kataData
+ * @returns {string} - kataData with formatted code & test block strings
+ */
 function slashCommentReturn(kataData: any): any {
-  // Return formatted header & reconfigured CODE || TEST strings for DOUBLE FORWARD SLASH COMMENT languages
   const codeBlockStrings = ["code", "test"].map(
     (flag) =>
       `//+ ${"=".repeat(116)}\n//+\n//+ ${kataData?.rank?.name} - ${kataData?.name}  [ ID: ${
@@ -199,8 +238,12 @@ function slashCommentReturn(kataData: any): any {
   return Object.assign(kataData, { code: codeBlockStrings[0], tests: codeBlockStrings[1] })
 }
 
+/**
+ * ? COMMON to all HASH COMMENT languages
+ * @param kataData
+ * @returns
+ */
 function hashCommentPreprocess(kataData: any): any {
-  //? COMMON to all HASH COMMENT languages
   // TEST STRING - Reformat export, imports & test config for local use
   // Remove initial any default comment block
   kataData.tests = kataData?.tests.replace(
@@ -215,6 +258,12 @@ function hashCommentPreprocess(kataData: any): any {
   return kataData
 }
 
+/**
+ * ? COMMON to all HASH COMMENT languages
+ * Return formatted header on code & test strings for HASH COMMENT languages
+ * @param kataData
+ * @returns
+ */
 function hashCommentReturn(kataData: any): any {
   // Return formatted header & reconfigured CODE || TEST strings for HASH COMMENT languages
   const codeBlockStrings = ["code", "test"].map(

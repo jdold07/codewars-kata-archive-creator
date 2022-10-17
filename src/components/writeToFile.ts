@@ -44,7 +44,7 @@ export async function createKataRootDir(kataDetails: any): Promise<void> {
     console.error(`Error from createKataRootDir(...) for ${kataDetails.kataPath}`)
     throw error
   }
-  console.log(`${kataDetails.kataPath} is ready`)
+  // console.log(`${kataDetails.kataPath} is ready`)
   return
 }
 
@@ -61,7 +61,7 @@ export async function createLangDir(kataDetails: any, langPath: string): Promise
     console.error(`Error from createLangDir(...) for ${kataDetails.slug}/${kataDetails.curLang}`)
     throw error
   }
-  console.log(`${kataDetails.slug}/${kataDetails.curLang} is ready`)
+  // console.log(`${kataDetails.slug}/${kataDetails.curLang} is ready`)
   return
 }
 

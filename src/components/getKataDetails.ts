@@ -3,17 +3,19 @@ import axios from "axios"
 import path from "path"
 import { rootPath } from "../../config/config"
 
+/**
+ * Fetch completed kata detail from Codewars API & process folders & markdown description file
+ * @param {filteredCompletedKataList:
+ *    data: {
+ *      id: string
+ *      name: string
+ *      slug: string
+ *      completedLanguages: string[]
+ *      completedAt: string
+ *    }[]}
+ * @returns {Promise<any>}
+ */
 export default async function getKataDetails(kata: any): Promise<any> {
-  /** Fetch completed kata detail from Codewars API & process folders & markdown description file
-   * @Param const filteredCompletedKataList:
-   *    data: {
-   *      id: string
-   *      name: string
-   *      slug: string
-   *      completedLanguages: string[]
-   *      completedAt: string
-   *    }[]
-   */
   try {
     const response = await axios.get(`https://www.codewars.com/api/v1/code-challenges/${kata.id}`)
 
