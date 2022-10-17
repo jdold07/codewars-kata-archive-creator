@@ -125,20 +125,20 @@ async function getUserSolutionsAllPages() {
     const page = await browser.newPage()
     await page.setExtraHTTPHeaders({ cookie: config.sessionID })
     await page.goto(`https://www.codewars.com/users/${config.userID}/completed_solutions`)
-    const delay = 1500
+    const delay = 2000
     const totalKatas = userCompletedDB.length
     let pageCount = 0
     let loadedCount = 0
     const progress = () => Math.round((loadedCount / totalKatas) * 100)
     const logMessage = () =>
       `${loadedCount} Katas from ${++pageCount} pages.  ${progress()}% complete...`
-    await process.stdout.write(logMessage())
     do {
       loadedCount = await getCount(page)
       await showProgress(await logMessage())
       await scrollDown(page)
       await new Promise((res) => setTimeout(res, delay))
     } while (totalKatas > loadedCount)
+    console.log(await logMessage())
     await new Promise((res) => setTimeout(res, delay))
     const userSolutionsList = await page.evaluate(() => {
       return { html: document.documentElement.innerHTML }
@@ -170,8 +170,8 @@ function showProgress(message: string): void {
    * @param message {string} The updated message to log out
    * @return void
    */
-  readline.cursorTo(process.stdout, 0)
   process.stdout.write(message)
+  readline.cursorTo(process.stdout, 0)
   return
 }
 
