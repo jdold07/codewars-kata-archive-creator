@@ -219,12 +219,12 @@ function hashCommentReturn(kataData: any): any {
   // Return formatted header & reconfigured CODE || TEST strings for HASH COMMENT languages
   const codeBlockStrings = ["code", "test"].map(
     (flag) =>
-      `#+ ${"=".repeat(117)}\n#+\n#+ ${kataData?.rank?.name} - ${kataData?.name}  [ ID: ${
+      `# + ${"=".repeat(116)}\n# +\n# + ${kataData?.rank?.name} - ${kataData?.name}  [ ID: ${
         kataData?.id
-      } ] (${kataData?.slug})\n#+ URL: ${kataData.url}\n#+ Category: ${
+      } ] (${kataData?.slug})\n# + URL: ${kataData.url}\n# + Category: ${
         kataData?.category?.toUpperCase() || "NONE"
-      }  |  Tags: ${kataData?.tags?.join(" | ").toUpperCase() || "NONE"}\n#+\n#+ ${"=".repeat(
-        117
+      }  |  Tags: ${kataData?.tags?.join(" | ").toUpperCase() || "NONE"}\n# +\n# + ${"=".repeat(
+        116
       )}\n\n${(flag === "code" ? kataData?.code : kataData?.tests) || ""}\n`
   )
   return Object.assign(kataData, { code: codeBlockStrings[0], tests: codeBlockStrings[1] })
