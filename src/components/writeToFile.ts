@@ -3,6 +3,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { userCompletedDBPath } from "../../config/config"
 import { format } from "prettier"
+import readline from "readline"
 
 /** Write update to completed Kata database file with latest API import data
  * This adds new Katas and additional languages completed since last import
@@ -72,23 +73,27 @@ export async function createLangDir(kataDetails: any, langPath: string): Promise
  * @returns {Promise<void>}
  */
 export async function writeKataMarkdownFile(kataDetails: any, mdString: string): Promise<void> {
-  const logMessage = await fs.writeFile(
+  let logMessage
+  await fs.writeFile(
     path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
     mdString,
     { flag: "w", mode: 644 },
-    async (error) => {
-      if (await error) {
-        if (error && error.code === "EEXIST") {
-          return await `${kataDetails.slug}.md file already exists and was NOT overwritten.`
+    (error) => {
+      if (error) {
+        if (error.code === "EEXIST") {
+          logMessage = `${kataDetails.slug}.md file already exists and was NOT overwritten.`
+          return
         }
         console.error(`Error from writeKataMarkdownFile(...) for ${kataDetails.slug}.md`)
         throw error
       }
-      return (
-        (await !error) && `Writing of markdown description file for ${kataDetails.slug} successful.`
-      )
+      logMessage = `Writing of markdown description file for ${kataDetails.slug} successful.`
+      return
     }
   )
+  do {
+    await new Promise((res) => setTimeout(res, 200))
+  } while (!logMessage)
   console.log(await logMessage)
   return
 }
@@ -109,23 +114,29 @@ export async function writeUserSolutionFile(
   langFilename: string,
   langExt: string
 ): Promise<void> {
-  const logMessage = await fs.writeFile(
+  let logMessage
+  await fs.writeFile(
     path.join(langPath, `${langFilename}.${langExt}`),
     kataData.code,
     { flag: "wx", encoding: "utf8", mode: 644 },
-    async (error) => {
-      if (await error) {
-        if (error && error.code === "EEXIST") {
-          return await `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
+    (error) => {
+      if (error) {
+        if (error.code === "EEXIST") {
+          logMessage = `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
+          return
         }
         console.error(
           `Error from writeUserSolutionFile(...) for ${langFilename}.${langExt} CODE file`
         )
         throw error
       }
-      return (await !error) && `Writing of ${langFilename}.${langExt} CODE file was successful.`
+      logMessage = `Writing of ${langFilename}.${langExt} CODE file was successful.`
+      return
     }
   )
+  do {
+    await new Promise((res) => setTimeout(res, 200))
+  } while (!logMessage)
   console.log(await logMessage)
   return
 }
@@ -146,7 +157,8 @@ export async function writeTestFile(
   langFilename: string,
   langExt: string
 ): Promise<void> {
-  const logMessage = await fs.writeFile(
+  let logMessage
+  await fs.writeFile(
     path.join(
       langPath,
       kataData.curLang === "python"
@@ -155,17 +167,38 @@ export async function writeTestFile(
     ),
     kataData.tests,
     { flag: "wx", encoding: "utf8", mode: 644 },
-    async (error) => {
-      if (await error) {
-        if (error && error.code === "EEXIST") {
-          return await `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
+    (error) => {
+      if (error) {
+        if (error.code === "EEXIST") {
+          logMessage = `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
+          return
         }
         console.warn(`Error from writeTestFile(...) for ${langFilename}.${langExt} TEST file`)
         throw error
       }
-      return (await !error) && `Writing of ${langFilename}.${langExt} TEST file was successful.`
+      logMessage = `Writing of ${langFilename}.${langExt} TEST file was successful.`
+      return
     }
   )
+  do {
+    await new Promise((res) => setTimeout(res, 200))
+  } while (!logMessage)
   console.log(await logMessage)
+  return
+}
+
+/**
+ * Helper function for file writing relating to progress logging.
+ * Function is to run a waiting spinner while waiting for logMessage.
+ * @return void
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function showWriting(): Promise<void> {
+  process.stdout.write("Writing files")
+  for (let i = 0; i < 5; i++) {
+    process.stdout.write(".")
+    await new Promise((res) => setTimeout(res, 200))
+  }
+  readline.clearLine(process.stdout, 0)
   return
 }
