@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import json2md from "json2md"
-import path from "node:path"
 
 export default function parseForMD(kataDetails: any): string {
   /** json2md mapping / layout to generate markdown file content
@@ -24,9 +23,11 @@ export default function parseForMD(kataDetails: any): string {
         }</span>`
       },
       {
-        h5: `**First Published**: ${kataDetails?.publishedAt?.split("T")[0] || "*not available*"} ***by*** [${
-          kataDetails?.createdBy?.username || "*not available*"
-        }](${kataDetails?.createdBy?.url || "https://www.codewars.com"}) | **Approved**: ${
+        h5: `**First Published**: ${
+          kataDetails?.publishedAt?.split("T")[0] || "*not available*"
+        } ***by*** [${kataDetails?.createdBy?.username || "*not available*"}](${
+          kataDetails?.createdBy?.url || "https://www.codewars.com"
+        }) | **Approved**: ${
           kataDetails?.approvedAt?.split("T")[0] || "*not available*"
         } ***by*** [${kataDetails?.approvedBy?.username || "*not available*"}](${
           kataDetails?.approvedBy?.url || "*https://www.codewars.com*"
@@ -36,7 +37,9 @@ export default function parseForMD(kataDetails: any): string {
       {
         h5: `**My Completed Languages**: ${
           kataDetails?.completedLanguages?.join(", ") || "*not available*"
-        } ***as at*** ${date} | **Originally completed**: ${kataDetails?.completedAt?.split("T")[0] || "*not available*"}`
+        } ***as at*** ${date} | **Originally completed**: ${
+          kataDetails?.completedAt?.split("T")[0] || "*not available*"
+        }`
       },
       { hr: "" },
       { h2: "Kata Description" },
@@ -48,7 +51,12 @@ export default function parseForMD(kataDetails: any): string {
       { hr: "" },
       { p: `🏷 \`${kataDetails?.tags?.join(" | ").toUpperCase() || "NONE"}\`` },
       { p: `[View this Kata on Codewars.com](${kataDetails?.url || "https://www.codewars.com"})` },
-      { img: { title: "JDOld07 Codewars Badge", source: "https://www.codewars.com/users/jdold07/badges/large" } },
+      {
+        img: {
+          title: "JDOld07 Codewars Badge",
+          source: "https://www.codewars.com/users/jdold07/badges/large"
+        }
+      },
       { hr: "" },
       {
         h6: "*This Kata description was compiled by [**JDOld07**](https://tpstech.dev) with data provided by the [Codewars.com](https://www.codewars.com) API.*"
@@ -61,7 +69,7 @@ export default function parseForMD(kataDetails: any): string {
       }
     ])
   } catch (error) {
-    console.error(`Error from parseForMD(...) in ${path.basename(__filename)}`)
-    throw Error(`Error parsing markdown for ${kataDetails?.name}\n${error}`)
+    console.error(`Error from parseForMD(...) for ${kataDetails?.name}`)
+    throw error
   }
 }

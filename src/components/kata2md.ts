@@ -5,7 +5,7 @@ import axios from "axios"
 import axiosThrottle from "axios-request-throttle"
 import * as Writes from "./writeToFile"
 import parseForMD from "./parseForMD"
-import processUserSolutions from "./getUserSolutionsList"
+import getUserSolutionsList from "./getUserSolutionsList"
 import { combineData, runCodeWrites } from "./helpers"
 import processCodeStrings from "./processCodeStrings"
 
@@ -18,30 +18,35 @@ export default async () => {
   async function runMainFlow(): Promise<boolean> {
     try {
       const filteredUserCompletedList = await getUserCompletedList()
-      const userSolutionsList = await processUserSolutions()
+      const userSolutionsList = await getUserSolutionsList()
       for (const kata of filteredUserCompletedList) {
         const kataDetailWithRankPath = await getKataDetails(kata)
         //TODO Make the kata root directory creation & markdown write only run once per Kata ID.
         //TODO At the moment this runs unnecessarily for every language a Kata has been completed in.
-        Writes.createKataRootDir(kataDetailWithRankPath)
+        await Writes.createKataRootDir(kataDetailWithRankPath)
         const mdString = parseForMD(kataDetailWithRankPath)
-        Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
+        await Writes.writeKataMarkdownFile(kataDetailWithRankPath, mdString)
         for await (const language of kataDetailWithRankPath.completedLanguages) {
-          const combinedKataData = await combineData(kataDetailWithRankPath, userSolutionsList, language)
-          const kataDataProcessedCode = processCodeStrings(combinedKataData)
-          runCodeWrites(kataDataProcessedCode)
+          const combinedKataData = await combineData(
+            kataDetailWithRankPath,
+            userSolutionsList,
+            language
+          )
+          const kataDataProcessedCode = await processCodeStrings(combinedKataData)
+          await runCodeWrites(kataDataProcessedCode)
         }
       }
     } catch (error) {
       if (error) {
-        console.error(`Error executing kata2markdown App ... review config and try again`)
-        throw Error(`An error occurred while executing kata2markdown App\n${error}`)
+        throw error
       }
     }
     return true
   }
   if ((await runMainFlow()) === true) {
-    console.log("Processing COMPLETE!  Check output path to confirm everything has completed as expected.")
+    console.log(
+      "Processing COMPLETE!  Check output path to confirm everything has completed as expected."
+    )
     process.exitCode = 0
   } else {
     console.error(`Error while processing ... review config and try again`)

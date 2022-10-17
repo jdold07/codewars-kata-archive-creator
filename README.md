@@ -42,7 +42,7 @@ Now all that was done as a big initial import, I needed a way to keep it up-to-d
 
 So, it's functional 🥳 and I think it now does most everything I need it to do. However, there are still several tweaks I know I'd like to make. The main things I'm aware of are:
 
-1. Currently, when grabbing solutions from the profile page, it only reads the first page of the infinite scroll. I just haven't needed anything more than this, so I haven't done it. As I update it frequently, I don't need solutions beyond the first page, as the list is sorted most recent to oldest. For a bulk import, this would not be sufficient, and you would want to be able to collect all solutions.
+1. ✅ ~~Currently, when grabbing solutions from the profile page, it only reads the first page of the infinite scroll. I just haven't needed anything more than this, so I haven't done it. As I update it frequently, I don't need solutions beyond the first page, as the list is sorted most recent to oldest. For a bulk import, this would not be sufficient, and you would want to be able to collect all solutions.~~ 🥳 This has now been added! Including a config option flag to get all or only the first page.
 2. While looping what needs updating, it currently calls to make the root kata folder and the markdown description for each completed language of a given Kata. I want to modify this to remove these unnecessary calls.
 3. Finish commenting all the code to it's explicit as to what everything is doing (preferably before I have to work it out again 😫)
 4. Create all the types properly to eliminate the tons of any's that I'm currently using 😜

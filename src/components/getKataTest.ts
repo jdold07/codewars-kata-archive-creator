@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios"
 import cheerio from "cheerio"
-import path from "path"
 import { format } from "prettier"
 import * as config from "../../config/config"
 
@@ -15,7 +14,8 @@ export async function getKataTest(id: string, language: string): Promise<string>
       headers: { Cookie: config.sessionID }
     })
     const $ = cheerio.load(response.data)
-    const parser = language === "javascript" ? "espree" : language === "typescript" ? "typescript" : undefined
+    const parser =
+      language === "javascript" ? "espree" : language === "typescript" ? "typescript" : undefined
     const kataTest = parser
       ? format($("#kata-details-description", response.data).siblings().find("code").text(), {
           semi: false,
@@ -28,7 +28,7 @@ export async function getKataTest(id: string, language: string): Promise<string>
     console.log(`Processing of TEST data for ${id} ${language} successful.`)
     return kataTest
   } catch (error) {
-    console.error(`Error from getKataTest(...) in ${path.basename(__filename)}`)
-    throw Error(`Error processing kata TEST data\n${error}`)
+    console.error(`Error from getKataTest(...)`)
+    throw error
   }
 }

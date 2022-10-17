@@ -33,13 +33,14 @@
     "cheerio": "^1.0.0-rc.12",
     "json2md": "^2.0.0",
     "lodash": "^4.17.21",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "puppeteer": "^19.0.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.31",
     "@types/json2md": "^1.5.1",
-    "@types/node": "^18.7.23",
     "@types/lodash": "^4.14.186",
+    "@types/node": "^18.7.23",
     "@types/prettier": "^2.7.1",
     "eslint": "^8.24.0",
     "ts-node": "^10.9.1",
