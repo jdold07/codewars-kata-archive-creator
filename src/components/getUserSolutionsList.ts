@@ -164,6 +164,12 @@ async function getCount(page: puppeteer.Page): Promise<number> {
 }
 
 function showProgress(message: string): void {
+  /**
+   * Helper function for getEntireUserSolutionList() relating to progress logging.
+   * Function is to clear line on stdout and write updated progress message.
+   * @param message {string} The updated message to log out
+   * @return void
+   */
   readline.cursorTo(process.stdout, 0)
   process.stdout.write(message)
   return
