@@ -37,7 +37,7 @@ function typescriptFormatting(kataData: any, langFilename: string): any {
     ""
   )
   // Append export object that includes all top level const and/or function names
-  kataData.code = `${kataData?.code}\n\nexport { ${(
+  kataData.code = `${kataData?.code}\nexport { ${(
     kataData?.code?.match(/(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\())/gm) || [
       "UNKNOWN"
     ]
@@ -70,7 +70,7 @@ function javascriptFormatting(kataData: any, langFilename: string): any {
   slashCommentPreprocess(kataData)
 
   // Append export object that includes all top level const and/or function names
-  kataData.code = `${kataData?.code}\n\nmodule.exports = { ${(
+  kataData.code = `${kataData?.code}\nmodule.exports = { ${(
     kataData?.code?.match(
       /(?:(?<=(?:^const|^function|^class)\s)(\w+)(?=(?:\s=\s\(|\s?\()))|^\w+(?=\s=[\s\n]+\()/gm
     ) || ["UNKNOWN"]
@@ -149,7 +149,7 @@ function coffeescriptFormatting(kataData: any, langFilename: string): any {
   kataData = hashCommentPreprocess(kataData)
 
   // Append export group of top level declarations
-  kataData.code = `${kataData?.code}\n\nmodule.exports = { ${
+  kataData.code = `${kataData?.code}\nmodule.exports = { ${
     kataData?.code?.match(/^(\w+)(?=(?:\s=\s\(\w+).*(?:->|=>))/gm) || ["UNKNOWN"]?.join(", ")
   } }`
   // TEST STRING - Reformat export, imports & test config for local use
