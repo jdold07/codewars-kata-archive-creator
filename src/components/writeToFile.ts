@@ -4,11 +4,12 @@ import path from "node:path"
 import { userCompletedDBPath } from "../../config/config"
 import { format } from "prettier"
 
+/** Write update to completed Kata database file with latest API import data
+ * This adds new Katas and additional languages completed since last import
+ * @param {fullUserCompletedList: any}
+ * @returns {Promise<void>}
+ **/
 export async function updateUserCompletedDB(fullUserCompletedList: any): Promise<void> {
-  /** Write update to completed Kata database file with latest API import data
-   * This adds new Katas and additional languages completed since last import
-   * @Param const fullUserCompletedList
-   **/
   fs.writeFile(
     path.join(userCompletedDBPath),
     format(`export const userCompletedDB = ${JSON.stringify(fullUserCompletedList)}`, {
@@ -29,10 +30,13 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
   return
 }
 
+/**
+ * Create individual Kata root directory that will hold each completed
+ * language specific directory related to the Kata
+ * @param kataDetails
+ * @returns {Promise<void>}
+ */
 export async function createKataRootDir(kataDetails: any): Promise<void> {
-  /** Create individual Kata root directory that will hold each completed
-   * language specific directory related to the Kata
-   **/
   try {
     await fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 755 })
   } catch (error) {
@@ -43,8 +47,13 @@ export async function createKataRootDir(kataDetails: any): Promise<void> {
   return
 }
 
+/**
+ * Create individual Kata language path
+ * @param kataDetails
+ * @param langPath
+ * @returns {Promise<void>}
+ */
 export async function createLangDir(kataDetails: any, langPath: string): Promise<void> {
-  // Create individual Kata language path
   try {
     await fs.mkdirSync(langPath, { recursive: true, mode: 755 })
   } catch (error) {
@@ -55,78 +64,87 @@ export async function createLangDir(kataDetails: any, langPath: string): Promise
   return
 }
 
+/**
+ * Call to generate Kata markdown description layout & write file to disk
+ * !Currently set to OVERWRITE existing markdown description
+ * @param {kataDetails: any}
+ * @param {mdString: string}
+ * @returns {Promise<void>}
+ */
 export async function writeKataMarkdownFile(kataDetails: any, mdString: string): Promise<void> {
-  /** Call to generate Kata markdown description layout & write file to disk
-   * !Currently set to OVERWRITE existing markdown description
-   **/
-  let logMessage
-  await fs.writeFile(
+  const logMessage = await fs.writeFile(
     path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
     mdString,
     { flag: "w", mode: 644 },
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          logMessage = `${kataDetails.slug}.md file already exists and was NOT overwritten.`
-          return
+          return `${kataDetails.slug}.md file already exists and was NOT overwritten.`
         }
         console.error(`Error from writeKataMarkdownFile(...) for ${kataDetails.slug}.md`)
         throw error
       }
-      logMessage = `Writing of markdown description file for ${kataDetails.slug} successful.`
-      return
+      return `Writing of markdown description file for ${kataDetails.slug} successful.`
     }
   )
-  console.log(logMessage)
+  console.log(await logMessage)
   return
 }
 
+/**
+ * Write user solution code block/s to file
+ * ?Currently set so it will NOT overwrite an existing file
+ * ?With this setting, new solutions for an existing language will be lost
+ * @param {kataData: any}
+ * @param {langPath: string}
+ * @param {langFilename: string}
+ * @param {langEx: string}
+ * @returns {Promise<void>}
+ */
 export async function writeUserSolutionFile(
   kataData: any,
   langPath: string,
   langFilename: string,
   langExt: string
 ): Promise<void> {
-  /** Write user solution code block/s to file
-   * ?Currently set so it will NOT overwrite an existing file
-   * ?With this setting, new solutions for an existing language will be lost
-   **/
-  let logMessage
-  await fs.writeFile(
+  const logMessage = await fs.writeFile(
     path.join(langPath, `${langFilename}.${langExt}`),
     kataData.code,
     { flag: "wx", encoding: "utf8", mode: 644 },
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          logMessage = `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
-          return
+          return `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
         }
         console.error(
           `Error from writeUserSolutionFile(...) for ${langFilename}.${langExt} CODE file`
         )
         throw error
       }
-      logMessage = `Writing of ${langFilename}.${langExt} CODE file was successful.`
-      return
+      return `Writing of ${langFilename}.${langExt} CODE file was successful.`
     }
   )
-  console.log(logMessage)
+  console.log(await logMessage)
   return
 }
 
+/**
+ * Write test code block/s to file
+ * ?Currently set so it will NOT overwrite an existing file
+ * ?With this setting, no updates or changes to tests for an existing language will occur
+ * @param {kataData: any}
+ * @param {langPath: string}
+ * @param {langFilename: string}
+ * @param {langEx: string}
+ * @returns {Promise<void>}
+ */
 export async function writeTestFile(
   kataData: any,
   langPath: string,
   langFilename: string,
   langExt: string
 ): Promise<void> {
-  /** Write test code block/s to file
-   * ?Currently set so it will NOT overwrite an existing file
-   * ?With this setting, no updates or changes to tests for an existing language will occur
-   **/
-  let logMessage
-  await fs.writeFile(
+  const logMessage = await fs.writeFile(
     path.join(
       langPath,
       kataData.curLang === "python"
@@ -138,16 +156,14 @@ export async function writeTestFile(
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
-          logMessage = `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
-          return
+          return `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
         }
         console.warn(`Error from writeTestFile(...) for ${langFilename}.${langExt} TEST file`)
         throw error
       }
-      logMessage = `Writing of ${langFilename}.${langExt} TEST file was successful.`
-      return
+      return `Writing of ${langFilename}.${langExt} TEST file was successful.`
     }
   )
-  console.log(logMessage)
+  console.log(await logMessage)
   return
 }
