@@ -76,15 +76,17 @@ export async function writeKataMarkdownFile(kataDetails: any, mdString: string):
     path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
     mdString,
     { flag: "w", mode: 644 },
-    (error) => {
-      if (error) {
-        if (error.code === "EEXIST") {
-          return `${kataDetails.slug}.md file already exists and was NOT overwritten.`
+    async (error) => {
+      if (await error) {
+        if (error && error.code === "EEXIST") {
+          return await `${kataDetails.slug}.md file already exists and was NOT overwritten.`
         }
         console.error(`Error from writeKataMarkdownFile(...) for ${kataDetails.slug}.md`)
         throw error
       }
-      return `Writing of markdown description file for ${kataDetails.slug} successful.`
+      return (
+        (await !error) && `Writing of markdown description file for ${kataDetails.slug} successful.`
+      )
     }
   )
   console.log(await logMessage)
@@ -111,17 +113,17 @@ export async function writeUserSolutionFile(
     path.join(langPath, `${langFilename}.${langExt}`),
     kataData.code,
     { flag: "wx", encoding: "utf8", mode: 644 },
-    (error) => {
-      if (error) {
-        if (error.code === "EEXIST") {
-          return `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
+    async (error) => {
+      if (await error) {
+        if (error && error.code === "EEXIST") {
+          return await `${langFilename}.${langExt} CODE file already exists and was NOT overwritten.`
         }
         console.error(
           `Error from writeUserSolutionFile(...) for ${langFilename}.${langExt} CODE file`
         )
         throw error
       }
-      return `Writing of ${langFilename}.${langExt} CODE file was successful.`
+      return (await !error) && `Writing of ${langFilename}.${langExt} CODE file was successful.`
     }
   )
   console.log(await logMessage)
@@ -153,15 +155,15 @@ export async function writeTestFile(
     ),
     kataData.tests,
     { flag: "wx", encoding: "utf8", mode: 644 },
-    (error) => {
-      if (error) {
-        if (error.code === "EEXIST") {
-          return `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
+    async (error) => {
+      if (await error) {
+        if (error && error.code === "EEXIST") {
+          return await `${langFilename}.${langExt} TEST file already exists and was NOT overwritten.`
         }
         console.warn(`Error from writeTestFile(...) for ${langFilename}.${langExt} TEST file`)
         throw error
       }
-      return `Writing of ${langFilename}.${langExt} TEST file was successful.`
+      return (await !error) && `Writing of ${langFilename}.${langExt} TEST file was successful.`
     }
   )
   console.log(await logMessage)
