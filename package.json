@@ -16,10 +16,11 @@
     "url": "https://github.com/jdold07/kata2markdown/issues",
     "email": "kata2markdown@tpstech.dev"
   },
-  "main": "app.js",
+  "main": "./dist/app.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "k2m": "node ./dist/app.js"
   },
   "keywords": [
     "Codewars",
