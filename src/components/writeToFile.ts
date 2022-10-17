@@ -94,7 +94,7 @@ export async function writeKataMarkdownFile(kataDetails: any, mdString: string):
   do {
     await new Promise((res) => setTimeout(res, 200))
   } while (!logMessage)
-  console.log(await logMessage)
+  await console.log(await logMessage)
   return
 }
 
@@ -137,7 +137,7 @@ export async function writeUserSolutionFile(
   do {
     await new Promise((res) => setTimeout(res, 200))
   } while (!logMessage)
-  console.log(await logMessage)
+  await console.log(await logMessage)
   return
 }
 
@@ -183,7 +183,7 @@ export async function writeTestFile(
   do {
     await new Promise((res) => setTimeout(res, 200))
   } while (!logMessage)
-  console.log(await logMessage)
+  await console.log(await logMessage)
   return
 }
 
