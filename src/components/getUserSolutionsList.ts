@@ -129,18 +129,13 @@ async function getUserSolutionsAllPages() {
     const totalKatas = userCompletedDB.length
     let pageCount = 0
     let loadedCount = 0
-    process.stdout.write(
-      `${loadedCount} Katas from ${++pageCount} pages.  ${Math.round(
-        (loadedCount / totalKatas) * 100
-      )}% complete...`
-    )
+    const progress = () => Math.round((loadedCount / totalKatas) * 100)
+    const logMessage = () =>
+      `${loadedCount} Katas from ${++pageCount} pages.  ${progress()}% complete...`
+    await process.stdout.write(logMessage())
     do {
       loadedCount = await getCount(page)
-      await showProgress(
-        `${loadedCount} Katas from ${++pageCount} pages.  ${Math.round(
-          (loadedCount / totalKatas) * 100
-        )}% complete...`
-      )
+      await showProgress(await logMessage())
       await scrollDown(page)
       await new Promise((res) => setTimeout(res, delay))
     } while (totalKatas > loadedCount)
@@ -168,10 +163,10 @@ async function getCount(page: puppeteer.Page): Promise<number> {
   return await page.$$eval(".list-item-solutions", (arr) => arr.length)
 }
 
-async function showProgress(message: string): Promise<void> {
+function showProgress(message: string): void {
   readline.cursorTo(process.stdout, 0)
   process.stdout.write(message)
-  await new Promise((res) => setTimeout(res, 500))
+  return
 }
 
 async function scrollDown(page: puppeteer.Page) {
