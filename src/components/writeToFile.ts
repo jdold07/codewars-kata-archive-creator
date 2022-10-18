@@ -13,11 +13,11 @@ import readline from "readline"
 export async function updateUserCompletedDB(fullUserCompletedList: any): Promise<void> {
   fs.writeFile(
     path.join(userCompletedDBPath),
-    format(`export const userCompletedDB = ${JSON.stringify(fullUserCompletedList)}`, {
+    format(`${JSON.stringify(fullUserCompletedList)}`, {
       semi: false,
       printWidth: 125,
       trailingComma: "none",
-      parser: "typescript"
+      parser: "json"
     }),
     { flag: "w", encoding: "utf8", mode: 644 },
     (error) => {
