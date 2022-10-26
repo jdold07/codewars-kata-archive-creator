@@ -3,7 +3,7 @@ import cheerio from "cheerio"
 import { format } from "prettier"
 import Axios from "axios"
 import * as config from "../../config/config"
-import userCompletedDB from "/Users/jdold07/Dropbox/Code/jdold07/kata2markdown/config/userCompletedDB.json"
+import userCompletedDB from "/Users/jdold07/Library/CloudStorage/Dropbox/Code/jdold07/kata2markdown/config/userCompletedDB.json"
 import puppeteer from "puppeteer"
 import readline from "readline"
 
