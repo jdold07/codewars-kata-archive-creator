@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "k2m": "node ./dist/app.js"
+    "k2m": "node ./dist/src/app.js"
   },
   "keywords": [
     "Codewars",

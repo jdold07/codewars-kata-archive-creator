@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import userCompletedDB from "/Users/jdold07/Library/CloudStorage/Dropbox/Code/jdold07/kata2markdown/config/userCompletedDB.json"
 import { userID } from "../../config/config"
+import userCompletedDB from "/Users/jdold07/Library/CloudStorage/Dropbox/Code/jdold07/kata2markdown/config/userCompletedDB.json"
 import { updateUserCompletedDB } from "./writeToFile"
 import axios from "axios"
 
