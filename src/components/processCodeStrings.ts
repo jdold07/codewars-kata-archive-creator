@@ -23,6 +23,7 @@ export default function processCodeStrings(kataData: any): any {
       return coffeescriptFormatting(kataData, langFilename)
     default:
       //! CATCHALL - Should not ever hit this!  Provides a default return or break for TS
+      console.error(`LANGUAGE NOT FOUND while formatting strings for ${kataData.slug}`)
       throw Error(
         `LANGUAGE NOT FOUND while formatting strings for ${kataData.slug} in ${kataData.curLang}`
       )
