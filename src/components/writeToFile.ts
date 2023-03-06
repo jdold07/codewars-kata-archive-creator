@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from "node:fs"
 import path from "node:path"
-import { userCompletedDBPath } from "../../config/config"
 import { format } from "prettier"
 import readline from "readline"
+import { userCompletedDBPath } from "../../config/config"
 
 /** Write update to completed Kata database file with latest API import data
  * This adds new Katas and additional languages completed since last import
@@ -19,7 +19,7 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
       trailingComma: "none",
       parser: "json"
     }),
-    { flag: "w", encoding: "utf8", mode: 644 },
+    { flag: "w", encoding: "utf8", mode: 755 },
     (error) => {
       if (error) {
         console.error(`Error from updateUserCompleteDB(...) for ${userCompletedDBPath}`)
@@ -39,7 +39,7 @@ export async function updateUserCompletedDB(fullUserCompletedList: any): Promise
  */
 export async function createKataRootDir(kataDetails: any): Promise<void> {
   try {
-    await fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 755 })
+    fs.mkdirSync(kataDetails.kataPath, { recursive: true, mode: 741 })
   } catch (error) {
     console.error(`Error from createKataRootDir(...) for ${kataDetails.kataPath}`)
     throw error
@@ -56,7 +56,7 @@ export async function createKataRootDir(kataDetails: any): Promise<void> {
  */
 export async function createLangDir(kataDetails: any, langPath: string): Promise<void> {
   try {
-    await fs.mkdirSync(langPath, { recursive: true, mode: 755 })
+    fs.mkdirSync(langPath, { recursive: true, mode: 741 })
   } catch (error) {
     console.error(`Error from createLangDir(...) for ${kataDetails.slug}/${kataDetails.curLang}`)
     throw error
@@ -74,10 +74,10 @@ export async function createLangDir(kataDetails: any, langPath: string): Promise
  */
 export async function writeKataMarkdownFile(kataDetails: any, mdString: string): Promise<void> {
   let logMessage
-  await fs.writeFile(
+  fs.writeFile(
     path.join(kataDetails.kataPath, `${kataDetails.slug}.md`),
     mdString,
-    { flag: "w", mode: 644 },
+    { flag: "w", mode: 744 },
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
@@ -94,7 +94,7 @@ export async function writeKataMarkdownFile(kataDetails: any, mdString: string):
   do {
     await new Promise((res) => setTimeout(res, 200))
   } while (!logMessage)
-  await console.log(await logMessage)
+  console.log(await logMessage)
   return
 }
 
@@ -115,10 +115,10 @@ export async function writeUserSolutionFile(
   langExt: string
 ): Promise<void> {
   let logMessage
-  await fs.writeFile(
+  fs.writeFile(
     path.join(langPath, `${langFilename}.${langExt}`),
     kataData.code,
-    { flag: "wx", encoding: "utf8", mode: 644 },
+    { flag: "wx", encoding: "utf8", mode: 755 },
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
@@ -137,7 +137,7 @@ export async function writeUserSolutionFile(
   do {
     await new Promise((res) => setTimeout(res, 200))
   } while (!logMessage)
-  await console.log(await logMessage)
+  console.log(await logMessage)
   return
 }
 
@@ -158,7 +158,7 @@ export async function writeTestFile(
   langExt: string
 ): Promise<void> {
   let logMessage
-  await fs.writeFile(
+  fs.writeFile(
     path.join(
       langPath,
       kataData.curLang === "python"
@@ -166,7 +166,7 @@ export async function writeTestFile(
         : `${langFilename}.Test.${langExt}`
     ),
     kataData.tests,
-    { flag: "wx", encoding: "utf8", mode: 644 },
+    { flag: "wx", encoding: "utf8", mode: 755 },
     (error) => {
       if (error) {
         if (error.code === "EEXIST") {
@@ -183,7 +183,7 @@ export async function writeTestFile(
   do {
     await new Promise((res) => setTimeout(res, 200))
   } while (!logMessage)
-  await console.log(await logMessage)
+  console.log(await logMessage)
   return
 }
 
