@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getKataTest } from "./getKataTest"
-import * as config from "../../config/config"
-import * as Writes from "./writeToFile"
 import _ from "lodash"
 import path from "node:path"
+import * as config from "../../config/config"
+import { getKataTest } from "./getKataTest"
+import * as Writes from "./writeToFile"
 
 /**Helper function for filename case adjustments
  * Converts html slug name to language specific casing by convention
@@ -54,9 +54,9 @@ export async function combineData(
  * specific language version of the current Kata.  Then make the calls to
  * create necessary directory structure and write both code & test files
  * @param {kataData: any}
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function runCodeWrites(kataData: any): void {
+export async function runCodeWrites(kataData: any): Promise<void> {
   // Set language path
   const langPath = path.join(kataData.kataPath, kataData.curLang)
   // Set language file extension
@@ -64,8 +64,10 @@ export function runCodeWrites(kataData: any): void {
   // Set filename case type
   const langFilename =
     kataData.curLang === "python" ? changeCase(kataData.slug, "s") : changeCase(kataData.slug, "c")
-  Writes.createLangDir(kataData, langPath)
-  Writes.writeUserSolutionFile(kataData, langPath, langFilename, langExt)
-  Writes.writeTestFile(kataData, langPath, langFilename, langExt)
+  await Promise.all([
+    Writes.createLangDir(kataData, langPath),
+    Writes.writeUserSolutionFile(kataData, langPath, langFilename, langExt),
+    Writes.writeTestFile(kataData, langPath, langFilename, langExt)
+  ])
   return
 }
