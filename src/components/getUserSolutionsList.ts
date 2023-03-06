@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import Axios from "axios"
 import cheerio from "cheerio"
 import { format } from "prettier"
-import Axios from "axios"
-import * as config from "../../config/config"
-import userCompletedDB from "/Users/jdold07/Library/CloudStorage/Dropbox/Code/jdold07/kata2markdown/config/userCompletedDB.json"
-import puppeteer from "puppeteer"
+import { Page, launch } from "puppeteer"
 import readline from "readline"
+import * as config from "../../config/config"
+import userCompletedDB from "/Users/jdold07/Library/CloudStorage/Dropbox/code/projects/kata2markdown/config/userCompletedDB.json"
 
 //+ ====================================================================================================================
 //+ Main Default Function for collecting & processing user solutions
@@ -120,7 +120,7 @@ async function getUserSolutionsFirstPage(): Promise<any> {
  */
 async function getUserSolutionsAllPages() {
   try {
-    const browser = await puppeteer.launch({
+    const browser = await launch({
       headless: true,
       defaultViewport: null,
       args: ["--window-size=1200,800"]
@@ -157,10 +157,10 @@ async function getUserSolutionsAllPages() {
 /**
  * Helper function for getEntireUserSolutionsList().  Returns array length for
  * comparison against previous to evaluate end of infinite scroll
- * @param {page: puppeteer.Page} - Current evaluated page from puppeteer
+ * @param {page: Page} - Current evaluated page from puppeteer
  * @returns {Promise<number>} - Length of the array of selector param of page.$$eval
  */
-async function getCount(page: puppeteer.Page): Promise<number> {
+async function getCount(page: Page): Promise<number> {
   return await page.$$eval(".list-item-solutions", (arr) => arr.length)
 }
 
@@ -179,9 +179,9 @@ function showProgress(message: string): void {
 /**
  * Helper function for getEntireUserSolutionsList().  Runs the page scroll to bring
  * selector param into view and trigger infinite scroll next page.
- * @param {page: puppeteer.Page} - Current evaluated page from puppeteer
+ * @param {page: Page} - Current evaluated page from puppeteer
  */
-async function scrollDown(page: puppeteer.Page) {
+async function scrollDown(page: Page) {
   await page.$eval(".items-list:last-child", (selector) => {
     selector.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" })
   })
