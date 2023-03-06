@@ -5,7 +5,7 @@ import json2md from "json2md"
  * @param kataDetails - Data object containing Kata detail required for description
  * @returns {json2md: string} - Data object parsed into markdown layout as a string
  **/
-export default function parseForMD(kataDetails: any): string {
+export default async function parseForMD(kataDetails: any): Promise<string> {
   try {
     const date = new Date().toISOString().split("T")[0]
 
