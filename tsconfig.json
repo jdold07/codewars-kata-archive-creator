@@ -1,14 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Node 16",
-  "exclude": ["node_modules", "**/node_modules/*", "config/userCompletedDB.ts"],
+  "exclude": ["**/node_modules/**", "config/userCompletedDB.ts"],
 
   "compilerOptions": {
     "lib": ["ES2022", "DOM"],
     "module": "CommonJS",
     "target": "ES2022",
-    "jsx": "preserve",
-    "strict": true,
     "removeComments": true,
     "sourceMap": false,
     "esModuleInterop": true,
