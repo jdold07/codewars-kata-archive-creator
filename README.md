@@ -1,4 +1,4 @@
-# **kata2markdown**
+# **Codewars Kata Archiver**
 
 ### _For maintaining & organising your completed [Codewars.com](https://www.codewars.com) Kata solutions_
 
