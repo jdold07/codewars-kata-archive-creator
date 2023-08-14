@@ -1,20 +1,20 @@
 {
-  "name": "kata2markdown",
-  "version": "1.4.1",
-  "description": "An app originally to format and write a Codewars.com Kata description into Markdown file.  Now also imports and updates your completed katas with a formatted solution & test file for each completed language.  All files are written to an organised file structure.  Can be used to import one, many or additional languages for existing completed Codewars.com Katas",
+  "name": "codewars-kata-archiver",
+  "version": "1.4.2",
+  "description": "An app originally intended to generate, format & output a Codewars.com Kata description as a Markdown file.  Actually evolved into an app that imports & updates your completed katas with your formatted solution/s & tests for each completed language.  All files are placed in an organised file structure.  Can be used to import one, many or additional languages for existing completed Codewars.com Katas",
   "author": {
-    "name": "JDOld07",
-    "url": "https://github.com/jdold07/kata2markdown/",
-    "email": "kata2markdown@tpstech.dev"
+    "name": "tsdevau",
+    "url": "https://github.com/tsdevau/codewars-kata-archiver/",
+    "email": "codewars-kata-archiver@tsdev.au"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jdold07/kata2markdown.git"
+    "url": "https://github.com/tsdevau/codewars-kata-archiver.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jdold07/kata2markdown/issues",
-    "email": "kata2markdown@tpstech.dev"
+    "url": "https://github.com/tsdevau/codewars-kata-archiver/issues",
+    "email": "codewars-kata-archiver@tsdev.au"
   },
   "main": "./dist/app.js",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "keywords": [
     "Codewars",
-    "Kata Solution",
+    "Kata Solutions",
     "Markdown",
     "json2md"
   ],
