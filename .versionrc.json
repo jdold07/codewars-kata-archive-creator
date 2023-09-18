@@ -1,0 +1,24 @@
+{
+  "types": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "chore", "section": "Build Related" },
+    { "type": "build", "section": "Build Related" },
+    { "type": "refactor", "section": "Other Changes" },
+    { "type": "style", "section": "Other Changes" },
+    { "type": "perf", "section": "Features" },
+    { "type": "test", "section": "Build Related" },
+    { "type": "docs", "section": "Documentation" },
+    { "type": "revert", "section": "Other Changes" },
+    { "type": "wip", "section": "Work In Progress" },
+    { "type": "initial", "section": "Work in Progress" },
+    { "type": "ci", "hidden": true }
+  ],
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ],
+  "releaseCommitMessageFormat": "chore(bump): 🏷️ `@tpstech/codewars-kata-archiver` -> v{{currentTag}}"
+}

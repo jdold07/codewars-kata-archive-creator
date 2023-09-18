@@ -1,20 +1,19 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 16",
-  "exclude": ["**/node_modules/**", "config/userCompletedDB.ts"],
-
   "compilerOptions": {
-    "lib": ["ES2022", "DOM"],
-    "module": "CommonJS",
-    "target": "ES2022",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
     "removeComments": true,
     "sourceMap": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleDetection": "auto",
-    "moduleResolution": "Node",
     "outDir": "./dist",
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "baseUrl": "."
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*", "dist/**/*", "private/**/*"]
 }

@@ -1,0 +1,8 @@
+{
+	"printWidth": 120,
+	"semi": false,
+	"singleAttributePerLine": true,
+	"plugins": [
+		"/Users/tpstech/code/codewars-kata-archiver/node_modules/prettier-plugin-packagejson/lib/index.js"
+	]
+}
