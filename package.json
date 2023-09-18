@@ -39,6 +39,7 @@
     "bl": "tsc --build && pnpm link -g",
     "build": "tsc --build",
     "k2m": "node ./dist/src/app.js",
+    "release": "standard-version",
     "test": "jest"
   },
   "dependencies": {
