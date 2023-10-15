@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/tsdevau/codewars-kata-archiver/compare/v2.0.0...v2.1.0) (2023-10-15)
+
+
+### Features & Additions
+
+* **build:** 👷 Switch from tsc to esbuild ([3bde8c6](https://github.com/tsdevau/codewars-kata-archiver/commit/3bde8c6128bd401edcc1f3e35c7a75d535e949b8))
+
+
+### General Config Updates
+
+* **semver:** 🔧 Switch standard-version to release-please action ([d6c3682](https://github.com/tsdevau/codewars-kata-archiver/commit/d6c3682b341a7aab0d7941559a617eadc018949c))
+
 ## 2.0.0 (2023-09-18)
 
 
