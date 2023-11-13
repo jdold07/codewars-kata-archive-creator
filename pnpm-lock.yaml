@@ -23,8 +23,8 @@ devDependencies:
     specifier: ^0.22.33
     version: 0.22.33
   '@types/json2md':
-    specifier: ^1.5.3
-    version: 1.5.3
+    specifier: ^1.5.4
+    version: 1.5.4
   '@types/node':
     specifier: ^20.8.10
     version: 20.8.10
@@ -394,8 +394,8 @@ packages:
     resolution: {integrity: sha512-RbSSoHliUbnXj3ny0CNFOoxrIDV6SUGyStHsvDqosw6CkdPV8TtWGlfecuK4ToyMEAql6pzNxgCFKanovUzlgQ==}
     dev: true
 
-  /@types/json2md@1.5.3:
-    resolution: {integrity: sha512-svfVk3lIxqdmtvtABS8keGscPExJE3dBn/MhIh0T7I/KaOkZk8q3z1GfKu/f5H1R8w8DanyzeHT1Iz4DcI0Bvw==}
+  /@types/json2md@1.5.4:
+    resolution: {integrity: sha512-OFTAYD7Nnyu7FZPGnDwYbGOTKqzDfX71uFSgTbGhcr0aHCi17QkSOY3wO5H4yv5h23Ly+7suvf2lzHcdeDIH2Q==}
     dev: true
 
   /@types/node@20.8.10:
