@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.1](https://github.com/tsdevau/codewars-kata-archiver/compare/v2.1.0...v2.1.1) (2023-12-05)
+
+
+### General Config Updates
+
+* ⬆️ Update package dependencies and release configuration ([e2c690f](https://github.com/tsdevau/codewars-kata-archiver/commit/e2c690f8d794648e116fe410382ffe36b3c17ce2))
+* Update dependencies in package.json ([994dbcc](https://github.com/tsdevau/codewars-kata-archiver/commit/994dbcc389073f85510dd2d7056db6c729578f3a))
+
 ## [2.1.0](https://github.com/tsdevau/codewars-kata-archiver/compare/v2.0.0...v2.1.0) (2023-10-15)
 
 
