@@ -45,17 +45,17 @@
     "cheerio": "1.0.0-rc.12",
     "json2md": "^2.0.1",
     "node-fetch": "^3.3.2",
-    "puppeteer": "^22.0.0"
+    "puppeteer": "^22.1.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
     "@types/json2md": "^1.5.4",
-    "@types/node": "^20.11.17",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
     "esbuild": "^0.20.0",
     "eslint": "^8.56.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-packagejson": "^2.4.10"
+    "prettier-plugin-packagejson": "^2.4.11"
   }
 }

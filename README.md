@@ -6,22 +6,22 @@
 
 ## **What it does...**
 
-Designed to to access Kata information and a user's completed Kata information provided through the [Codewars.com](https://www.codewars.com) API. Then, armed with that, produce a detailed Kata description as a markdown file and save this to disk in an organised file structure.
+Designed to access Kata information and a user's completed Kata information provided through the [Codewars.com](https://www.codewars.com) API. Then, armed with that, produce a detailed Kata description as a markdown file and save this to disk in an organised file structure.
 
-Well that was the initial intent, however, it evolved to also collect the user's completed solutions, format them and save them to disk as a language file. And then, further extended to also fetch the test code for the kata and format & save that to disk as a test file. Configured correctly, this enables code solutions to be run against tests in your local environment.
+Well, that was the initial intent, however, it evolved to also collect the user's completed solutions, format them and save them to disk as a language file. Then, further extended to also fetch the test code for the kata and format & save that to disk as a test file. Configured correctly, this enables code solutions to be run against tests in your local environment.
 
 <br>
 
 ## **Why do it...**
 
-I was trying to organise an absolute mess of completed Kata files on my own system that have accumulated over the course of my time on [Codewars.com](https://www.codewars.com). I almost always prefer to code the solutions in my own familiar IDE environment in favour of the online editor. Over time this has amounted to an unordered mess of saved files that I always had intentions of getting sorted.
+I was trying to organise an absolute mess of completed Kata files on my system that have accumulated throughout my time on [Codewars.com](https://www.codewars.com). I almost always prefer to code the solutions in my own familiar IDE environment in favour of the online editor. Over time this has amounted to an unordered mess of saved files that I always had intentions of getting sorted.
 
-In another project, I will be organising all my completed solutions into a Github repository in order to:
+In another project, I will be organising all my completed solutions into a GitHub repository to:
 
 1. Organise all the mess in a consistent and organised format.
-2. Maintain a kind-of place of reference for me (and now others) to refer to.
-3. Become more proficient with git and making it part of the normal flow.
-4. Finally getting wrapping my head around unit testing by creating tests for each completed Kata.
+2. Maintain a kind of place of reference for me (and now others) to refer to.
+3. Become more proficient with git and make it part of the normal flow.
+4. Finally wrapping my head around unit testing by creating tests for each completed Kata.
 5. And now, with this app, writing an app to automate some of the repetitive work.
 
 <br>
@@ -42,16 +42,16 @@ Now all that was done as a big initial import, I needed a way to keep it up-to-d
 
 ## **Where am I up to?**
 
-So, it's _functional_ 🥳 and I think it now does most everything I need it to do. However, there are still several tweaks I know I'd like to make. The main things I'm aware of are:
+So, it's _functional_ 🥳 and I think it now does almost everything I need it to do. However, there are still several tweaks I know I'd like to make. The main things I'm aware of are:
 
-1. ✅ ~~Currently, when grabbing solutions from the profile page, it only reads the first page of the infinite scroll. I just haven't needed anything more than this, so I haven't done it. As I update it frequently, I don't need solutions beyond the first page, as the list is sorted most recent to oldest. For a bulk import, this would not be sufficient, and you would want to be able to collect all solutions.~~ 🥳 This has now been added! Including a config option flag to get all or only the first page.
-2. ✅ ~~While looping what needs updating, it currently calls ~~to make the root kata folder and~~ the markdown description for each completed language of a given Kata. I want to modify this to remove the unnecessary rewrite.~~ 🥳 This has been completed now... _I think_.
-3. ✅ ~~Finish commenting all the code to it's explicit as to what everything is doing (preferably before I have to work it out again 😫)~~ 🥳 This has been completed now... _I think_.
-4. ✅ ~~Create all the types properly to eliminate the tons of any's that I'm currently using 😜~~ 🥳 This has been completed now... _I think_.
+1. ✅ ~~Currently, when grabbing solutions from the profile page, it only reads the first page of the infinite scroll. I just haven't needed anything more than this, so I haven't done it. As I update it frequently, I don't need solutions beyond the first page, as the list is sorted from most recent to oldest. For a bulk import, this would not be sufficient, and you would want to be able to collect all solutions.~~ 🥳 This has now been added! Including a config option flag to get all or only the first page.
+2. ✅ ~~While looping what needs updating, it currently calls ~~to make the root Kata folder and~~ the markdown description for each completed language of a given Kata. I want to modify this to remove the unnecessary rewrite.~~ 🥳 This has been completed now... _I think_.
+3. ✅ ~~Finish commenting all the code so it's explicit as to what everything is doing (preferably before I have to work it out again 😫)~~ 🥳 This has been completed now... _I think_.
+4. ✅ ~~Create all the types properly to eliminate the tons of _any_'s that I'm currently using 😜~~ 🥳 This has been completed now... _I think_.
 5. Currently only capable of handling languages I've completed Katas in on [Codewars.com](https://www.codewars.com). I would like to extend the app to handle additional languages.
-6. Add to this readme or other similar documentation in regard to installation, configuration and running the app.
-7. Currently the app uses the session ID cookie to access the user profile and tests for Kata the user has completed. This is a bit of pain, as it requires grabbing that from Dev Tools to add to the config. I'd like to try and find a more elegant solution to handling authentication.
-8. I'm sure there are other things, but the escape me right now
+6. Add to this readme or other similar documentation regarding installation, configuration and running the app.
+7. Currently, the app uses the session ID cookie to access the user profile and tests for Kata the user has completed. This is a bit of pain, as it requires grabbing that from Dev Tools to add to the config. I'd like to try and find a more elegant solution to handling authentication.
+8. I'm sure there are other things, but they escape me right now
 
 But, for the time being, it works! So I'll see where it goes from here.
 
@@ -59,4 +59,4 @@ But, for the time being, it works! So I'll see where it goes from here.
 
 ## **Thanks to the creators & maintainers of the dependency modules I used to make this app work!**
 
-An little extra credit to [IonicaBizau](https://github.com/IonicaBizau/json2md). Although he/she/they would't know it, while fumbling with the idea of this whole thing, it was stumbling onto this library and going through its repo that finally gave me the push to just have a go and pursue actually creating this little project instead of leaving it as just an idea.
+A little extra credit to [IonicaBizau](https://github.com/IonicaBizau/json2md). Although he/she/they wouldn't know it, while fumbling with the idea of this whole thing, it was stumbling onto this library and going through its repo that finally gave me the push to just have a go and pursue creating this little project instead of leaving it as just an idea.
