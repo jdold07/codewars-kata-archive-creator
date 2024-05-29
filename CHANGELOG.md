@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.2](https://github.com/tsdevau/codewars-kata-archiver/compare/codewars-kata-archiver-v3.0.1...codewars-kata-archiver-v3.0.2) (2024-05-29)
+
+
+### Bug Fixes
+
+* **userCompletedDB:** update import logic and tsconfig for userCompletedDB ([2a6aa95](https://github.com/tsdevau/codewars-kata-archiver/commit/2a6aa9597278e5b2068066e087df293c0fc069e4))
+
 ## [3.0.1](https://github.com/tsdevau/codewars-kata-archiver/compare/codewars-kata-archiver-v3.0.0...codewars-kata-archiver-v3.0.1) (2024-05-29)
 
 
