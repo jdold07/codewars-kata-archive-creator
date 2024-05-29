@@ -6,7 +6,7 @@ await esbuild.build({
   minify: true,
   legalComments: "none",
   platform: "node",
-  target: "node20",
+  target: "node22",
   external: [],
   outdir: "dist",
   format: "esm",
