@@ -10,7 +10,7 @@
   ],
   "bugs": {
     "url": "https://github.com/tsdevau/codewars-kata-archiver/issues",
-    "email": "codewars-kata-archiver@tsdev.au"
+    "email": "github@tsdev.au"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,11 @@
   "license": "MIT",
   "author": {
     "name": "tsdevau",
-    "email": "codewars-kata-archiver@tsdev.au",
-    "url": "https://github.com/tsdevau/codewars-kata-archiver/"
+    "email": "github@tsdev.au",
+    "url": "https://tsdev.au/codewars-archiver/",
+    "github": "https://github.com/tsdevau",
+    "linkedin": "https://www.linkedin.com/in/tsdevau/",
+    "twitter": "https://twitter.com/tsdev_au"
   },
   "type": "module",
   "main": "./dist/app.js",
@@ -39,23 +42,24 @@
     "bl": "tsc --build && pnpm link -g",
     "build": "tsc --build",
     "k2m": "node ./dist/src/app.js",
-    "test": "jest"
+    "test": "pnpm vitest"
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
+    "dotenv": "^16.4.5",
     "json2md": "^2.0.1",
     "node-fetch": "^3.3.2",
-    "puppeteer": "^22.1.0"
+    "puppeteer": "^22.10.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
     "@types/json2md": "^1.5.4",
-    "@types/node": "^20.11.19",
-    "@typescript-eslint/eslint-plugin": "^7.0.1",
-    "@typescript-eslint/parser": "^7.0.1",
-    "esbuild": "^0.20.0",
-    "eslint": "^8.56.0",
+    "@types/node": "^20.12.12",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "esbuild": "^0.21.4",
+    "eslint": "^9.3.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-packagejson": "^2.4.11"
+    "prettier-plugin-packagejson": "^2.5.0"
   }
 }
