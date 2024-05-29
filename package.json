@@ -1,6 +1,6 @@
 {
   "name": "@tsdevau/codewars-kata-archiver",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "An app originally intended to generate, format & output a Codewars.com Kata description as a Markdown file.  Actually evolved into an app that imports & updates your completed katas with your formatted solution/s & tests for each completed language.  All files are placed in an organised file structure.  Can be used to import one, many or additional languages for existing completed Codewars.com Katas",
   "keywords": [
     "Codewars",
