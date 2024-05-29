@@ -1,7 +1,7 @@
 import fetch from "node-fetch"
 import { join } from "path"
-import { rootPath } from "./config/config"
-import { ExtendedKataDetails, KataDetails, UserCompletedDBEntry } from "./types"
+import { rootPath } from "./config/config.js"
+import { ExtendedKataDetails, KataDetails, UserCompletedDBEntry } from "./types.js"
 
 /**
  * Fetch completed kata detail from Codewars API & process folders & markdown description file

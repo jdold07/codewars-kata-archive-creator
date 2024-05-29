@@ -1,10 +1,8 @@
 import fetch from "node-fetch"
-import { userCompletedDBPath, userID } from "./config/config"
-import type { CodewarsApiResponse, UserCompletedDBEntry } from "./types"
-import { updateUserCompletedDB } from "./writeToFile"
-const userCompletedDB: UserCompletedDBEntry[] = await import(userCompletedDBPath, { assert: { type: "json" } }).then(
-  (jsonFile) => jsonFile.default,
-)
+import { userID } from "./config/config.js"
+import { userCompletedDB } from "./config/userCompletedDB.js"
+import type { CodewarsApiResponse, UserCompletedDBEntry } from "./types.js"
+import { updateUserCompletedDB } from "./writeToFile.js"
 
 /**
  * Entry point for fetching new/current Completed Kata List from API
@@ -65,6 +63,7 @@ async function fetchUserCompletedList(): Promise<UserCompletedDBEntry[]> {
  * @returns {Promise<UserCompletedDBEntry[]>} - Filtered list of completed Katas
  **/
 async function filterUserCompletedList(fullUserCompletedList: UserCompletedDBEntry[]): Promise<UserCompletedDBEntry[]> {
+
   try {
     const filteredUserCompletedList = fullUserCompletedList.filter(
       (fullListKata) =>

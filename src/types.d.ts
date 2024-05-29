@@ -9,6 +9,8 @@ export interface UserCompletedDBEntry {
   completedAt: string
 }
 
+export type myLanguagesMap = Map<string, { extension: string; name: string }>
+
 /**
  * User completed kata list object as received from the Codewars API (https://www.codewars.com/api/v1/users/${config.username}/code-challenges/completed?page=${page})
  */

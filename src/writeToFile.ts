@@ -3,8 +3,8 @@ import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { format } from "prettier"
 import readline from "readline"
-import { userCompletedDBPath } from "./config/config"
-import { CombinedKataDetail, ExtendedKataDetails, UserCompletedDBEntry } from "./types"
+import { userCompletedDBPath } from "./config/config.js"
+import { CombinedKataDetail, ExtendedKataDetails, UserCompletedDBEntry } from "./types.js"
 
 /** Write update to completed Kata database file with latest API import data
  * This adds new Katas and additional languages completed since last import
@@ -16,11 +16,11 @@ export async function updateUserCompletedDB(fullUserCompletedList: UserCompleted
     // Intentionally not awaited.  App can continue as the updated file is not later referenced.
     writeFile(
       userCompletedDBPath,
-      await format(`${JSON.stringify(fullUserCompletedList)}`, {
+      await format(`export const userCompletedDB = ${JSON.stringify(fullUserCompletedList, null, 2)}`, {
         semi: false,
         printWidth: 125,
         trailingComma: "none",
-        parser: "json",
+        parser: "typescript",
       }),
       { flag: "w", encoding: "utf8", mode: 0o644 },
     )

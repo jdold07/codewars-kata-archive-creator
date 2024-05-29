@@ -1,7 +1,7 @@
 import cheerio from "cheerio"
 import { format } from "prettier"
 import { launch } from "puppeteer"
-import { sessionID } from "./config/config"
+import { sessionID } from "./config/config.js"
 
 /**
  * Fetch test code from Codewars.com language specific kata solutions page.
@@ -13,7 +13,7 @@ import { sessionID } from "./config/config"
 export async function getKataTest(id: string, language: string): Promise<string> {
   try {
     const browser = await launch({
-      headless: "new",
+      headless: true,
       defaultViewport: null,
       args: ["--window-size=1200,1000"],
     })

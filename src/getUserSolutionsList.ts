@@ -2,8 +2,8 @@ import cheerio from "cheerio"
 import { format } from "prettier"
 import { launch, type Page } from "puppeteer"
 import readline from "readline"
-import { getPages, sessionID, userID } from "./config/config"
-import { ConfigGetPages, UserCompletedDBEntry, UserSolution } from "./types"
+import { getPages, sessionID, userID } from "./config/config.js"
+import { ConfigGetPages, UserCompletedDBEntry, UserSolution } from "./types.js"
 
 //+ ====================================================================================================================
 //+ Main Default Function for collecting & processing user solutions
@@ -100,7 +100,7 @@ export default async function getUserSolutionsList(
 async function getUserSolutions(getPages: ConfigGetPages = false, ucdbLength: number): Promise<string> {
   try {
     const browser = await launch({
-      headless: "new",
+      headless: true,
       defaultViewport: null,
       args: ["--window-size=1200,1000"],
     })

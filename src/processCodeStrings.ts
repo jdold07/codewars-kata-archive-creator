@@ -1,5 +1,5 @@
-import { changeSlugCase } from "./helpers"
-import { CombinedKataDetail } from "./types"
+import { changeSlugCase } from "./helpers.js"
+import { CombinedKataDetail } from "./types.js"
 
 /**
  * Format code block strings for writing code &/or test files
@@ -10,6 +10,8 @@ export default async function processCodeStrings(combinedKataDetail: CombinedKat
   const langFilename =
     combinedKataDetail.curLang === "python"
       ? changeSlugCase(combinedKataDetail.slug, "s")
+      : combinedKataDetail.curLang === "csharp"
+      ? changeSlugCase(combinedKataDetail.slug, "p")
       : changeSlugCase(combinedKataDetail.slug, "c")
 
   switch (combinedKataDetail.curLang) {
@@ -17,16 +19,18 @@ export default async function processCodeStrings(combinedKataDetail: CombinedKat
       return typescriptFormatting(combinedKataDetail, langFilename)
     case "javascript":
       return javascriptFormatting(combinedKataDetail, langFilename)
+    case "csharp":
+      return csharpFormatting(combinedKataDetail, langFilename)
     case "swift":
       return swiftFormatting(combinedKataDetail, langFilename)
     case "python":
       return pythonFormatting(combinedKataDetail, langFilename)
-    case "coffescript":
+    case "coffeescript":
       return coffeescriptFormatting(combinedKataDetail, langFilename)
     default:
       //! CATCHALL - Should not ever hit this!  Provides a default return or break for TS
-      console.error(`LANGUAGE NOT FOUND while formatting strings for ${combinedKataDetail.slug}`)
-      throw Error(
+      console.error(`LANGUAGE NOT FOUND while formatting strings for ${combinedKataDetail.slug}\n  ${combinedKataDetail.slug}, ${combinedKataDetail.curLang}, ${langFilename}`)
+      throw new Error(
         `LANGUAGE NOT FOUND while formatting strings for ${combinedKataDetail.slug} in ${combinedKataDetail.curLang}`,
       )
   }
@@ -123,6 +127,24 @@ async function javascriptFormatting(
   // Remove any existing reference to Test
   preProcessedKata.tests = preProcessedKata?.tests.replace(/\bTest\./g, "")
 
+  return slashCommentReturn(preProcessedKata)
+}
+
+/**
+ * ?C# specific formatting
+ * @param combinedKataDetail
+ * @param langFilename
+ * @returns {Promise<CombinedKataDetail>} - CombinedKataDetail with formatted code & test block strings for C#
+ */
+async function csharpFormatting(
+  combinedKataDetail: CombinedKataDetail,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  langFilename: string,
+): Promise<CombinedKataDetail> {
+  // CODE STRING - Reformat export, imports & test config for local use
+  const preProcessedKata = { ...combinedKataDetail, ...(await slashCommentPreprocess(combinedKataDetail)) }
+
+  // TEST STRING - Reformat export, imports & test config for local use
   return slashCommentReturn(preProcessedKata)
 }
 

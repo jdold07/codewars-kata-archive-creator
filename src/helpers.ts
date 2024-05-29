@@ -1,18 +1,20 @@
 import { join } from "node:path"
-import { myLanguages } from "./config/config"
-import { getKataTest } from "./getKataTest"
-import { CombinedKataDetail, ExtendedKataDetails, UserSolution } from "./types"
-import { createLangDir, writeTestFile, writeUserSolutionFile } from "./writeToFile"
+import { myLanguages } from "./config/config.js"
+import { getKataTest } from "./getKataTest.js"
+import { CombinedKataDetail, ExtendedKataDetails, UserSolution } from "./types.js"
+import { createLangDir, writeTestFile, writeUserSolutionFile } from "./writeToFile.js"
 
 /**Helper function for filename case adjustments
  * Converts html slug name to language convention specific casing
  * @param {string} slug - Kata name in slug format (eg this-kata-name)
- * @param {string} [caseFlag="c"] - Identifier for case type ("c", "s", default="c")
+ * @param {string} [caseFlag="c"] - Identifier for case type ("c", "s", "p", default="c")
  * @returns {string} - Kata slug reformatted to language specific case convention
  **/
 export function changeSlugCase(slug: string, caseFlag = "c"): string {
   return caseFlag === "c"
     ? slug.replace(/-(\w)/g, (_: string, $1: string) => `${$1.slice(0, 1).toUpperCase()}${$1.slice(1)}`)
+    : caseFlag === "p"
+    ? slug.replace(/(^\w|-\w)/g, (_: string, $1: string) => `${$1.slice(0, 1).toUpperCase()}${$1.slice(1)}`).replace(/-/g, "")
     : slug.replace(/-/g, "_")
 }
 

@@ -1,10 +1,10 @@
-import getKataDetails from "./getKataDetails"
-import getUserCompletedList from "./getUserCompletedList"
-import getUserSolutionsList from "./getUserSolutionsList"
-import { combineData, runLanguageWrites } from "./helpers"
-import { parseForMD } from "./parseForMD"
-import processCodeStrings from "./processCodeStrings"
-import { createKataRootDir, writeKataMarkdownFile } from "./writeToFile"
+import getKataDetails from "./getKataDetails.js"
+import getUserCompletedList from "./getUserCompletedList.js"
+import getUserSolutionsList from "./getUserSolutionsList.js"
+import { combineData, runLanguageWrites } from "./helpers.js"
+import { parseForMD } from "./parseForMD.js"
+import processCodeStrings from "./processCodeStrings.js"
+import { createKataRootDir, writeKataMarkdownFile } from "./writeToFile.js"
 
 /**
  * Main kata2markdown App

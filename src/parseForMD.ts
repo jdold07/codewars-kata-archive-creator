@@ -1,5 +1,5 @@
 import json2md from "json2md"
-import { ExtendedKataDetails } from "./types"
+import { ExtendedKataDetails } from "./types.js"
 
 /** json2md mapping / layout to generate markdown file content
  * @param {ExtendedKataDetails} extendedKataDetails - Data object containing Kata detail required for description
