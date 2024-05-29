@@ -1,6 +1,5 @@
 import fetch from "node-fetch"
-import { userID } from "./config/config.js"
-import { userCompletedDB } from "./config/userCompletedDB.js"
+import { userCompletedDBPath, userID } from "./config/config.js"
 import type { CodewarsApiResponse, UserCompletedDBEntry } from "./types.js"
 import { updateUserCompletedDB } from "./writeToFile.js"
 
@@ -39,9 +38,9 @@ async function fetchUserCompletedList(): Promise<UserCompletedDBEntry[]> {
 
     do {
       responseBody = JSON.parse(
-        await fetch(`http://www.codewars.com/api/v1/users/${userID}/code-challenges/completed?page=${page}`).then(
-          (res) => res.text(),
-        ),
+        await fetch(
+          `http://www.codewars.com/api/v1/users/${userID}/code-challenges/completed?page=${page}`,
+        ).then((res) => res.text()),
       )
       fullUserCompletedList.push(...responseBody.data)
       page += 1
@@ -62,9 +61,12 @@ async function fetchUserCompletedList(): Promise<UserCompletedDBEntry[]> {
  * @param {UserCompletedDBEntry[]} fullCompletedKataList - Full list of completed Katas
  * @returns {Promise<UserCompletedDBEntry[]>} - Filtered list of completed Katas
  **/
-async function filterUserCompletedList(fullUserCompletedList: UserCompletedDBEntry[]): Promise<UserCompletedDBEntry[]> {
-
+async function filterUserCompletedList(
+  fullUserCompletedList: UserCompletedDBEntry[],
+): Promise<UserCompletedDBEntry[]> {
   try {
+    const userCompletedDB: UserCompletedDBEntry[] = (await import(userCompletedDBPath))
+      ?.userCompletedDB
     const filteredUserCompletedList = fullUserCompletedList.filter(
       (fullListKata) =>
         !userCompletedDB.find((userListKata) => userListKata.id === fullListKata.id) ||

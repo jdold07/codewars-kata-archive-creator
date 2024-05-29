@@ -12,8 +12,8 @@
     "outDir": "./dist",
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "rootDir": "./src",
+    "rootDir": "./src"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "./config/userCompletedDB.js"],
   "exclude": ["node_modules/**/*", "dist/**/*", "private/**/*"]
 }
