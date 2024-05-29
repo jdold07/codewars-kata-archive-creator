@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.1](https://github.com/tsdevau/codewars-kata-archiver/compare/codewars-kata-archiver-v3.0.0...codewars-kata-archiver-v3.0.1) (2024-05-29)
+
+
+### DX Improvements
+
+* **app:** update imports, add C# formatting, and adjust headless config ([794118c](https://github.com/tsdevau/codewars-kata-archiver/commit/794118cf6605009e689bf6e7258930c783acd504))
+
+
+### DX Maintenance & Configuration
+
+* **config:** update prettier, build, and tsconfig settings ([6badbe9](https://github.com/tsdevau/codewars-kata-archiver/commit/6badbe9aec5520322bbb5aca807fb87c60b9ad9a))
+* **package:** update contact info, repository details, scripts, and dependencies ([49f63cc](https://github.com/tsdevau/codewars-kata-archiver/commit/49f63cce543d4ff059a621307323ffe5f5483bb1))
+
 ## [3.0.0](https://github.com/tsdevau/codewars-kata-archiver/compare/codewars-kata-archiver-v2.1.1...codewars-kata-archiver-v3.0.0) (2024-02-19)
 
 
